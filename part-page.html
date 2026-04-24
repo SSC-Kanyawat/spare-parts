@@ -1,0 +1,622 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="theme-color" content="#0f172a">
+<title>เบิกอะไหล่</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Sarabun:wght@300;400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap');
+
+  :root {
+    --bg: #0f172a;
+    --bg2: #1e293b;
+    --bg3: #334155;
+    --surface: #1e293b;
+    --border: #334155;
+    --accent: #f97316;
+    --text: #f1f5f9;
+    --text2: #94a3b8;
+    --text3: #64748b;
+    --success: #22c55e;
+    --danger: #ef4444;
+    --warning: #eab308;
+    --radius: 14px;
+    --radius-sm: 8px;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+
+  body {
+    font-family: 'Sarabun', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+    max-width: 430px;
+    margin: 0 auto;
+  }
+
+  /* ===== HEADER ===== */
+  .header {
+    background: var(--bg2);
+    padding: 16px 20px;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    position: sticky;
+    top: 0;
+    z-index: 10;
+  }
+  .header-icon {
+    width: 40px; height: 40px;
+    background: var(--accent);
+    border-radius: 10px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 20px;
+    flex-shrink: 0;
+  }
+  .header-title { font-size: 17px; font-weight: 600; line-height: 1.2; }
+  .header-sub { font-size: 12px; color: var(--text3); margin-top: 2px; font-family: 'IBM Plex Mono', monospace; }
+
+  /* ===== CONTENT ===== */
+  .content {
+    padding: 20px 20px 120px;
+  }
+
+  /* ===== STOCK CARD ===== */
+  .stock-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 24px 20px;
+    margin-bottom: 16px;
+    text-align: center;
+  }
+  .stock-label { font-size: 13px; color: var(--text3); margin-bottom: 10px; text-transform: uppercase; letter-spacing: 0.5px; }
+  .stock-num {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 64px;
+    font-weight: 500;
+    line-height: 1;
+    color: var(--success);
+  }
+  .stock-num.low { color: var(--warning); }
+  .stock-num.empty { color: var(--danger); }
+  .stock-unit { font-size: 20px; color: var(--text2); margin-top: 6px; }
+  .stock-warn {
+    margin-top: 12px;
+    font-size: 13px;
+    padding: 6px 14px;
+    border-radius: 20px;
+    display: inline-block;
+  }
+  .stock-warn.low { background: rgba(234,179,8,0.15); color: var(--warning); }
+  .stock-warn.empty { background: rgba(239,68,68,0.15); color: var(--danger); }
+
+  /* ===== INFO GRID ===== */
+  .info-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+    margin-bottom: 16px;
+  }
+  .info-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    padding: 12px 14px;
+  }
+  .info-label { font-size: 11px; color: var(--text3); margin-bottom: 4px; text-transform: uppercase; letter-spacing: 0.5px; }
+  .info-value { font-size: 14px; font-weight: 500; }
+
+  /* ===== FORM ===== */
+  .form-section {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 20px;
+    margin-bottom: 16px;
+  }
+  .form-title {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--text3);
+    margin-bottom: 16px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+  .form-group { margin-bottom: 14px; }
+  .form-group:last-child { margin-bottom: 0; }
+  .form-label { font-size: 13px; color: var(--text2); margin-bottom: 6px; display: block; }
+  .form-input {
+    width: 100%;
+    background: var(--bg3);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    padding: 12px 14px;
+    color: var(--text);
+    font-family: 'Sarabun', sans-serif;
+    font-size: 15px;
+    outline: none;
+  }
+  .form-input:focus { border-color: var(--accent); }
+  .form-input::placeholder { color: var(--text3); }
+  .form-input:disabled { opacity: 0.4; }
+
+  .qty-control { display: flex; align-items: center; gap: 12px; }
+  .qty-btn {
+    width: 44px; height: 44px;
+    border-radius: 50%;
+    border: 1px solid var(--border);
+    background: var(--bg3);
+    color: var(--text);
+    font-size: 24px;
+    display: flex; align-items: center; justify-content: center;
+    cursor: pointer;
+    flex-shrink: 0;
+    user-select: none;
+    line-height: 1;
+  }
+  .qty-btn:active { background: var(--accent); border-color: var(--accent); transform: scale(0.92); }
+  .qty-input {
+    flex: 1;
+    text-align: center;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 26px;
+    font-weight: 500;
+    background: var(--bg3);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    padding: 10px;
+    color: var(--text);
+    outline: none;
+  }
+  .qty-input:focus { border-color: var(--accent); }
+  .qty-input:disabled { opacity: 0.4; }
+
+  /* ===== BOTTOM BUTTON ===== */
+  .bottom-bar {
+    position: fixed;
+    bottom: 0; left: 50%;
+    transform: translateX(-50%);
+    width: 100%;
+    max-width: 430px;
+    padding: 14px 20px;
+    background: var(--bg);
+    border-top: 1px solid var(--border);
+  }
+  .btn-submit {
+    width: 100%;
+    background: var(--accent);
+    color: white;
+    border: none;
+    border-radius: 12px;
+    padding: 16px;
+    font-family: 'Sarabun', sans-serif;
+    font-size: 17px;
+    font-weight: 600;
+    cursor: pointer;
+  }
+  .btn-submit:active { transform: scale(0.98); }
+  .btn-submit:disabled { background: var(--bg3); color: var(--text3); cursor: default; transform: none; }
+
+  /* ===== MODAL ===== */
+  .modal-overlay {
+    position: fixed; inset: 0;
+    background: rgba(0,0,0,0.75);
+    z-index: 50;
+    display: none;
+    align-items: flex-end;
+    padding: 20px;
+  }
+  .modal-overlay.show { display: flex; }
+  .modal-box {
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    width: 100%;
+    padding: 24px;
+  }
+  .modal-title { font-size: 18px; font-weight: 700; margin-bottom: 10px; }
+  .modal-body { font-size: 14px; color: var(--text2); line-height: 1.9; margin-bottom: 22px; }
+  .modal-highlight { color: var(--accent); font-weight: 600; }
+  .modal-btns { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+  .btn-cancel {
+    padding: 14px; border-radius: 10px;
+    border: 1px solid var(--border);
+    background: var(--bg3); color: var(--text);
+    font-family: 'Sarabun', sans-serif; font-size: 16px; cursor: pointer;
+  }
+  .btn-confirm {
+    padding: 14px; border-radius: 10px; border: none;
+    background: var(--accent); color: white;
+    font-family: 'Sarabun', sans-serif; font-size: 16px; font-weight: 600; cursor: pointer;
+  }
+
+  /* ===== TOAST ===== */
+  .toast {
+    position: fixed; bottom: 90px; left: 50%;
+    transform: translateX(-50%) translateY(20px);
+    background: var(--success); color: white;
+    padding: 13px 22px; border-radius: 40px;
+    font-size: 14px; font-weight: 500;
+    z-index: 100; opacity: 0; transition: all 0.25s;
+    white-space: nowrap; max-width: 90%;
+    pointer-events: none;
+  }
+  .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+  .toast.error { background: var(--danger); }
+
+  /* ===== STATES ===== */
+  .loading-wrap {
+    display: flex; flex-direction: column;
+    align-items: center; justify-content: center;
+    padding: 80px 20px; gap: 16px;
+    color: var(--text3); font-size: 14px;
+  }
+  .spinner {
+    width: 40px; height: 40px;
+    border: 3px solid var(--border);
+    border-top-color: var(--accent);
+    border-radius: 50%;
+    animation: spin 0.7s linear infinite;
+  }
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  .error-wrap {
+    text-align: center; padding: 80px 20px;
+    color: var(--text3);
+  }
+  .error-icon { font-size: 48px; margin-bottom: 14px; }
+  .error-title { font-size: 18px; font-weight: 600; color: var(--text); margin-bottom: 8px; }
+  .error-sub { font-size: 14px; line-height: 1.6; }
+
+  /* ===== SUCCESS SCREEN ===== */
+  .success-wrap {
+    display: none;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+    padding: 40px 24px;
+    text-align: center;
+    gap: 16px;
+  }
+  .success-wrap.show { display: flex; }
+  .success-circle {
+    width: 88px; height: 88px;
+    border-radius: 50%;
+    background: rgba(34,197,94,0.15);
+    border: 2px solid var(--success);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 40px;
+  }
+  .success-title { font-size: 24px; font-weight: 700; }
+  .success-sub { font-size: 15px; color: var(--text2); line-height: 1.7; }
+  .success-remaining {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 14px;
+    color: var(--text3);
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    padding: 10px 20px;
+    margin-top: 8px;
+  }
+  .btn-reload {
+    margin-top: 8px;
+    padding: 13px 32px;
+    border-radius: 12px;
+    border: 1px solid var(--border);
+    background: var(--bg2);
+    color: var(--text);
+    font-family: 'Sarabun', sans-serif;
+    font-size: 15px;
+    cursor: pointer;
+  }
+</style>
+</head>
+<body>
+
+<!-- LOADING -->
+<div class="loading-wrap" id="loadingState">
+  <div class="spinner"></div>
+  <span>กำลังโหลดข้อมูลอะไหล่...</span>
+</div>
+
+<!-- ERROR -->
+<div class="error-wrap" id="errorState" style="display:none">
+  <div class="error-icon">⚠️</div>
+  <div class="error-title" id="errorTitle">ไม่พบอะไหล่</div>
+  <div class="error-sub" id="errorSub">ไม่พบรหัสอะไหล่ในระบบ<br>กรุณาตรวจสอบ URL</div>
+</div>
+
+<!-- MAIN PAGE (hidden until loaded) -->
+<div id="mainPage" style="display:none">
+  <div class="header">
+    <div class="header-icon" id="hdrIcon">⚙️</div>
+    <div>
+      <div class="header-title" id="hdrName">–</div>
+      <div class="header-sub" id="hdrId">–</div>
+    </div>
+  </div>
+
+  <div class="content">
+
+    <div class="stock-card">
+      <div class="stock-label">จำนวนคงเหลือ</div>
+      <div class="stock-num" id="stockNum">–</div>
+      <div class="stock-unit" id="stockUnit">–</div>
+      <div class="stock-warn" id="stockWarn" style="display:none"></div>
+    </div>
+
+    <div class="info-grid">
+      <div class="info-card">
+        <div class="info-label">ตำแหน่งเก็บ</div>
+        <div class="info-value" id="infoLoc">–</div>
+      </div>
+      <div class="info-card">
+        <div class="info-label">หน่วย</div>
+        <div class="info-value" id="infoUnit">–</div>
+      </div>
+      <div class="info-card" id="noteCard" style="grid-column:1/-1;display:none">
+        <div class="info-label">หมายเหตุ</div>
+        <div class="info-value" id="infoNote">–</div>
+      </div>
+    </div>
+
+    <div class="form-section">
+      <div class="form-title">ข้อมูลการเบิก</div>
+
+      <div class="form-group">
+        <label class="form-label">จำนวนที่ต้องการเบิก</label>
+        <div class="qty-control">
+          <div class="qty-btn" onclick="adjustQty(-1)">−</div>
+          <input class="qty-input" type="number" id="withdrawQty" value="1" min="1">
+          <div class="qty-btn" onclick="adjustQty(+1)">+</div>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">ชื่อผู้เบิก <span style="color:var(--danger)">*</span></label>
+        <input class="form-input" type="text" id="requester" placeholder="ชื่อ-นามสกุล หรือรหัสพนักงาน">
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">เหตุผล / งานที่ใช้</label>
+        <input class="form-input" type="text" id="reason" placeholder="เช่น PM, เปลี่ยนชิ้นส่วนชำรุด">
+      </div>
+    </div>
+
+  </div><!-- /content -->
+
+  <div class="bottom-bar">
+    <button class="btn-submit" id="btnSubmit" onclick="confirmWithdraw()">ยืนยันการเบิก</button>
+  </div>
+</div>
+
+<!-- SUCCESS OVERLAY -->
+<div class="success-wrap" id="successWrap">
+  <div class="success-circle">✓</div>
+  <div class="success-title">เบิกสำเร็จ!</div>
+  <div class="success-sub" id="successSub">–</div>
+  <div class="success-remaining" id="successRemaining">–</div>
+  <button class="btn-reload" onclick="location.reload()">เบิกอีกครั้ง</button>
+</div>
+
+<!-- CONFIRM MODAL -->
+<div class="modal-overlay" id="modal">
+  <div class="modal-box">
+    <div class="modal-title">✅ ยืนยันการเบิก</div>
+    <div class="modal-body" id="modalBody">–</div>
+    <div class="modal-btns">
+      <button class="btn-cancel" onclick="closeModal()">ยกเลิก</button>
+      <button class="btn-confirm" onclick="doWithdraw()">ยืนยัน</button>
+    </div>
+  </div>
+</div>
+
+<!-- TOAST -->
+<div class="toast" id="toast"></div>
+
+<script>
+// ============================================================
+// ⚙️ ตั้งค่า: ใส่ URL ของ Google Apps Script ตรงนี้
+// ============================================================
+const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwM5c1aADn8utYSfI2JRqHpjvh6YWy-acY6IyW9eaTc2P4wVPyx9Xj6BdgLNeKogePa/exec';
+// ============================================================
+
+let partData = null;
+
+function getIcon(name) {
+  const n = (name || '').toLowerCase();
+  if (n.includes('สาย') || n.includes('belt'))          return '〰️';
+  if (n.includes('ลูกปืน') || n.includes('bearing'))    return '⚙️';
+  if (n.includes('น้ำมัน') || n.includes('oil'))         return '🛢️';
+  if (n.includes('ซีล') || n.includes('seal'))           return '🔴';
+  if (n.includes('สกรู') || n.includes('screw') || n.includes('น็อต')) return '🔩';
+  if (n.includes('ปั๊ม') || n.includes('pump'))          return '💧';
+  if (n.includes('มอเตอร์') || n.includes('motor'))      return '⚡';
+  if (n.includes('ฟิลเตอร์') || n.includes('filter'))   return '🔲';
+  if (n.includes('วาล์ว') || n.includes('valve'))        return '🎛️';
+  if (n.includes('เซ็นเซอร์') || n.includes('sensor'))  return '📡';
+  return '⚙️';
+}
+
+function showError(title, sub) {
+  document.getElementById('loadingState').style.display = 'none';
+  document.getElementById('errorState').style.display = 'block';
+  document.getElementById('errorTitle').textContent = title;
+  document.getElementById('errorSub').textContent = sub;
+}
+
+async function loadPart() {
+  // อ่าน id จาก URL: ?id=P001
+  const params = new URLSearchParams(window.location.search);
+  const partId = params.get('id');
+
+  if (!partId) {
+    showError('ไม่ได้ระบุรหัสอะไหล่', 'URL ต้องมี ?id=รหัสอะไหล่\nเช่น page.html?id=P001');
+    return;
+  }
+
+  if (!SCRIPT_URL || SCRIPT_URL === 'YOUR_SCRIPT_URL_HERE') {
+    showError('ยังไม่ได้ตั้งค่า SCRIPT_URL', 'กรุณาแก้ไข SCRIPT_URL ใน HTML ให้ตรงกับ Google Apps Script ของคุณ');
+    return;
+  }
+
+  try {
+    const res = await fetch(`${SCRIPT_URL}?action=getPart&id=${encodeURIComponent(partId)}&t=${Date.now()}`);
+    const data = await res.json();
+
+    if (!data.success) {
+      showError('ไม่พบอะไหล่', `ไม่พบรหัส "${partId}" ในระบบ\nกรุณาตรวจสอบรหัสอะไหล่`);
+      return;
+    }
+
+    partData = data.part;
+    renderPart(partData);
+
+  } catch (err) {
+    showError('เชื่อมต่อไม่สำเร็จ', 'ไม่สามารถดึงข้อมูลจาก Google Sheet ได้\nกรุณาตรวจสอบ SCRIPT_URL และ deployment');
+  }
+}
+
+function renderPart(p) {
+  document.title = `เบิก: ${p.name}`;
+
+  // header
+  document.getElementById('hdrIcon').textContent = getIcon(p.name);
+  document.getElementById('hdrName').textContent = p.name;
+  document.getElementById('hdrId').textContent = p.id;
+
+  // stock
+  const stockEl = document.getElementById('stockNum');
+  stockEl.textContent = p.qty;
+  if (p.qty === 0)    { stockEl.className = 'stock-num empty'; }
+  else if (p.qty <= 5) { stockEl.className = 'stock-num low'; }
+  else                 { stockEl.className = 'stock-num'; }
+
+  document.getElementById('stockUnit').textContent = p.unit;
+
+  const warnEl = document.getElementById('stockWarn');
+  if (p.qty === 0) {
+    warnEl.textContent = '🚫 หมดสต็อก — ไม่สามารถเบิกได้';
+    warnEl.className = 'stock-warn empty';
+    warnEl.style.display = 'inline-block';
+  } else if (p.qty <= 5) {
+    warnEl.textContent = '⚠️ จำนวนใกล้หมด';
+    warnEl.className = 'stock-warn low';
+    warnEl.style.display = 'inline-block';
+  }
+
+  // info
+  document.getElementById('infoLoc').textContent = '📍 ' + p.location;
+  document.getElementById('infoUnit').textContent = p.unit;
+
+  if (p.note) {
+    document.getElementById('noteCard').style.display = 'block';
+    document.getElementById('infoNote').textContent = p.note;
+  }
+
+  // form
+  const qtyInput = document.getElementById('withdrawQty');
+  qtyInput.max = p.qty;
+
+  const disabled = p.qty === 0;
+  qtyInput.disabled = disabled;
+  document.getElementById('requester').disabled = disabled;
+  document.getElementById('reason').disabled = disabled;
+
+  const btn = document.getElementById('btnSubmit');
+  btn.disabled = disabled;
+  btn.textContent = disabled ? 'หมดสต็อก — ไม่สามารถเบิกได้' : 'ยืนยันการเบิก';
+
+  // show
+  document.getElementById('loadingState').style.display = 'none';
+  document.getElementById('mainPage').style.display = 'block';
+}
+
+function adjustQty(delta) {
+  const input = document.getElementById('withdrawQty');
+  let v = parseInt(input.value) || 1;
+  v = Math.max(1, Math.min(partData.qty, v + delta));
+  input.value = v;
+}
+
+function confirmWithdraw() {
+  const qty = parseInt(document.getElementById('withdrawQty').value);
+  const requester = document.getElementById('requester').value.trim();
+  const reason = document.getElementById('reason').value.trim();
+
+  if (!qty || qty < 1)           { showToast('กรุณาระบุจำนวน', true); return; }
+  if (!requester)                 { showToast('กรุณาระบุชื่อผู้เบิก', true); return; }
+  if (qty > partData.qty)         { showToast(`จำนวนเกิน: มีเพียง ${partData.qty} ${partData.unit}`, true); return; }
+
+  document.getElementById('modalBody').innerHTML =
+    `<strong>${partData.name}</strong><br>
+     จำนวน: <span class="modal-highlight">${qty} ${partData.unit}</span><br>
+     ผู้เบิก: <span class="modal-highlight">${requester}</span><br>
+     ${reason ? `งาน: ${reason}<br>` : ''}
+     <br>คงเหลือหลังเบิก: <strong>${partData.qty - qty} ${partData.unit}</strong>`;
+
+  document.getElementById('modal').classList.add('show');
+}
+
+function closeModal() {
+  document.getElementById('modal').classList.remove('show');
+}
+
+async function doWithdraw() {
+  closeModal();
+
+  const qty       = parseInt(document.getElementById('withdrawQty').value);
+  const requester = document.getElementById('requester').value.trim();
+  const reason    = document.getElementById('reason').value.trim();
+
+  const btn = document.getElementById('btnSubmit');
+  btn.disabled = true;
+  btn.textContent = 'กำลังบันทึก...';
+
+  try {
+    const url = `${SCRIPT_URL}?action=withdraw`
+      + `&id=${encodeURIComponent(partData.id)}`
+      + `&qty=${qty}`
+      + `&requester=${encodeURIComponent(requester)}`
+      + `&reason=${encodeURIComponent(reason)}`;
+
+    const res  = await fetch(url);
+    const data = await res.json();
+
+    if (data.success) {
+      // show success screen
+      document.getElementById('mainPage').style.display = 'none';
+      document.getElementById('successSub').innerHTML =
+        `เบิก <strong>${partData.name}</strong><br>จำนวน ${qty} ${partData.unit}<br>โดย: ${requester}`;
+      document.getElementById('successRemaining').textContent =
+        `คงเหลือในสต็อก: ${data.remaining} ${data.unit}`;
+      document.getElementById('successWrap').classList.add('show');
+    } else {
+      throw new Error(data.message);
+    }
+
+  } catch (err) {
+    showToast(err.message || 'เกิดข้อผิดพลาด กรุณาลองใหม่', true);
+    btn.disabled = false;
+    btn.textContent = 'ยืนยันการเบิก';
+  }
+}
+
+function showToast(msg, isError = false) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.className = 'toast' + (isError ? ' error' : '');
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 2800);
+}
+
+loadPart();
+</script>
+</body>
+</html>
