@@ -2,352 +2,507 @@
 <html lang="th">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
 <meta name="theme-color" content="#00AEEF">
-<title>เบิกอะไหล่</title>
+<meta name="apple-mobile-web-app-capable" content="yes">
+<title>ระบบอะไหล่ · เสริมสุข</title>
+<link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;600&display=swap" rel="stylesheet">
 <style>
-  @import url('https://fonts.googleapis.com/css2?family=Sarabun:wght@300;400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap');
+:root{
+  --blue:#00AEEF; --blue-d:#0090c8; --blue-dd:#00688F; --blue-l:#E4F4FC;
+  --green:#8DC63F; --green-d:#5f9410; --green-dd:#3E6A05; --green-l:#F0F8E4;
+  --bg:#F4F8FB; --card:#fff;
+  --line:#DCE8F0; --line2:#BCD4E4;
+  --tx:#12303F; --tx2:#5A7C8E; --tx3:#93AEBF;
+  --warn:#E08A00; --warn-l:#FFF6E0;
+  --dang:#D93B30; --dang-l:#FDECEA;
+  --mono:'IBM Plex Mono',monospace; --sans:'Sarabun',sans-serif;
+  --sh:0 1px 3px rgba(18,48,63,.08); --sh2:0 6px 20px rgba(18,48,63,.14);
+  --nav-h:62px;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--bg);color:var(--tx);font-family:var(--sans);font-size:15px;line-height:1.5;
+     -webkit-tap-highlight-color:transparent;padding-bottom:calc(var(--nav-h) + env(safe-area-inset-bottom) + 14px)}
+::-webkit-scrollbar{width:5px}::-webkit-scrollbar-thumb{background:var(--line2);border-radius:99px}
 
-  :root {
-    --blue:    #00AEEF;
-    --green:   #8DC63F;
-    --blue-dk: #0090C8;
-    --green-dk:#72A832;
-    --bg:      #F4F7FA;
-    --surface: #FFFFFF;
-    --border:  #DDE4EC;
-    --text:    #1A2B3C;
-    --text2:   #4A6070;
-    --text3:   #8FA3B1;
-    --success: #8DC63F;
-    --danger:  #E53935;
-    --warning: #F59E0B;
-    --radius:  14px;
-    --radius-sm: 8px;
-  }
+/* ══ HEADER ══ */
+.hd{background:var(--blue);color:#fff;padding:11px 14px;position:sticky;top:0;z-index:40;
+    box-shadow:0 2px 10px rgba(0,140,200,.28);display:flex;align-items:center;gap:11px}
+.hd-back{background:rgba(255,255,255,.2);border:1px solid rgba(255,255,255,.32);border-radius:8px;
+         width:33px;height:33px;display:none;place-items:center;cursor:pointer;flex-shrink:0}
+.hd-back.on{display:grid}
+.hd-back svg{width:17px;height:17px;stroke:#fff;fill:none;stroke-width:2.5;stroke-linecap:round;stroke-linejoin:round}
+.hd-tx{flex:1;min-width:0}
+.hd-t{font-size:16.5px;font-weight:700;line-height:1.2;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.hd-s{font-size:10.5px;opacity:.85}
+.hd-r{background:rgba(255,255,255,.2);border:1px solid rgba(255,255,255,.32);border-radius:8px;
+      width:33px;height:33px;display:grid;place-items:center;cursor:pointer;flex-shrink:0}
+.hd-r svg{width:16px;height:16px;stroke:#fff;fill:none;stroke-width:2.4;stroke-linecap:round;stroke-linejoin:round}
+.hd-r.spin svg{animation:sp .8s linear infinite}
 
-  * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+.wrap{max-width:560px;margin:0 auto;padding:13px 12px}
+.view{display:none}.view.on{display:block}
 
-  body {
-    font-family: 'Sarabun', sans-serif;
-    background: var(--bg);
-    color: var(--text);
-    min-height: 100vh;
-    max-width: 430px;
-    margin: 0 auto;
-  }
+/* ══ SHARED ══ */
+.spin-el{width:34px;height:34px;border:3px solid var(--line);border-top-color:var(--blue);border-radius:50%;animation:sp .75s linear infinite;margin:0 auto 13px}
+@keyframes sp{to{transform:rotate(360deg)}}
+.load{text-align:center;padding:56px 20px;color:var(--tx2);font-size:14px}
+.err{background:var(--dang-l);border:1px solid #F2B5AF;border-radius:12px;padding:24px 20px;text-align:center}
+.err-i{font-size:34px;margin-bottom:9px}
+.err-t{font-size:16.5px;font-weight:700;color:#A82A20;margin-bottom:5px}
+.err-d{font-size:13.5px;color:#B84438;line-height:1.6}
+.err-b{margin-top:15px;padding:11px 20px;border-radius:9px;border:1.5px solid var(--line2);
+       background:#fff;font-family:var(--sans);font-size:14px;font-weight:700;cursor:pointer;color:var(--tx)}
 
-  /* HEADER */
-  .header {
-    background: linear-gradient(135deg, var(--blue) 0%, #00C4FF 100%);
-    padding: 0 20px;
-    position: sticky; top: 0; z-index: 10;
-    box-shadow: 0 2px 12px rgba(0,174,239,0.25);
-  }
-  .header-inner { display: flex; align-items: center; gap: 12px; padding: 14px 0; }
-  .header-logo {
-    width: 42px; height: 42px; background: white; border-radius: 10px;
-    display: flex; align-items: center; justify-content: center;
-    font-size: 22px; flex-shrink: 0; box-shadow: 0 2px 8px rgba(0,0,0,0.12);
-  }
-  .header-title { font-size: 17px; font-weight: 700; color: white; line-height: 1.2; }
-  .header-sub   { font-size: 11px; color: rgba(255,255,255,0.82); margin-top: 2px; font-family: 'IBM Plex Mono', monospace; }
+.bdg{font-size:10.5px;font-weight:700;padding:4px 10px;border-radius:99px;display:inline-block;white-space:nowrap}
+.b-ok{background:var(--green-l);color:var(--green-dd);border:1px solid #C4E08C}
+.b-low{background:var(--warn-l);color:#8A5600;border:1px solid #F0CE7A}
+.b-out{background:var(--dang-l);color:#A82A20;border:1px solid #F2B5AF}
+.b-over{background:var(--blue-l);color:var(--blue-dd);border:1px solid #A4DAF2}
+.b-unset{background:#EDF1F4;color:var(--tx2);border:1px solid var(--line2)}
+.bar{height:7px;background:#E4EDF3;border-radius:99px;overflow:hidden;margin-top:8px}
+.bar-f{height:100%;border-radius:99px;transition:width .45s}
 
-  .company-strip {
-    background: var(--green);
-    text-align: center; padding: 5px 20px;
-    font-size: 12px; font-weight: 600; color: white; letter-spacing: 0.4px;
-  }
+/* ══ PART CARD ══ */
+.pcard{background:var(--card);border:1px solid var(--line);border-radius:13px;padding:15px;
+       box-shadow:var(--sh);margin-bottom:12px;position:relative;overflow:hidden}
+.pcard::before{content:'';position:absolute;left:0;top:0;bottom:0;width:5px;background:var(--blue)}
+.pcard.s-ok::before{background:var(--green)}.pcard.s-low::before{background:var(--warn)}
+.pcard.s-out::before{background:var(--dang)}.pcard.s-over::before{background:var(--blue)}
+.pcard.s-unset::before{background:var(--tx3)}
+.p-top{display:flex;justify-content:space-between;align-items:flex-start;gap:10px;margin-bottom:9px}
+.p-code{font-family:var(--mono);font-size:11.5px;font-weight:600;color:var(--blue-dd);
+        background:var(--blue-l);display:inline-block;padding:3px 9px;border-radius:6px;margin-bottom:7px}
+.p-name{font-size:17.5px;font-weight:700;line-height:1.35}
+.p-grid{display:grid;grid-template-columns:auto 1fr;gap:13px;align-items:center}
+.qbox{background:var(--bg);border:1px solid var(--line);border-radius:11px;padding:10px 16px;text-align:center;min-width:88px}
+.qbox-l{font-size:10px;color:var(--tx2);font-weight:700;margin-bottom:3px}
+.qbox-v{font-size:33px;font-weight:700;font-family:var(--mono);line-height:1}
+.qbox-u{font-size:10.5px;color:var(--tx2);margin-top:2px;font-weight:600}
+.mr{display:flex;justify-content:space-between;font-size:12.5px;padding:3px 0;border-bottom:1px dashed var(--line)}
+.mr:last-child{border-bottom:none}
+.mr-k{color:var(--tx2)}.mr-v{font-weight:700;font-family:var(--mono)}
+.p-note{margin-top:10px;font-size:12.5px;color:var(--tx2);padding-top:10px;border-top:1px dashed var(--line)}
 
-  /* CONTENT */
-  .content { padding: 18px 16px 120px; }
+/* ══ TABS ══ */
+.tabs{display:flex;gap:7px;background:var(--card);border:1px solid var(--line);border-radius:11px;
+      padding:5px;margin-bottom:12px;box-shadow:var(--sh)}
+.tab{flex:1;padding:11px 6px;border-radius:8px;border:none;background:transparent;font-family:var(--sans);
+     font-size:14.5px;font-weight:700;color:var(--tx2);cursor:pointer;transition:.15s;
+     display:flex;align-items:center;justify-content:center;gap:6px}
+.tab svg{width:16px;height:16px;stroke:currentColor;fill:none;stroke-width:2.4;stroke-linecap:round;stroke-linejoin:round}
+.tab.on{background:var(--blue);color:#fff;box-shadow:0 2px 7px rgba(0,174,239,.32)}
+.tab.on.in{background:var(--green);color:var(--green-dd);box-shadow:0 2px 7px rgba(141,198,63,.34)}
+.tab.on.adj{background:var(--warn);color:#fff;box-shadow:0 2px 7px rgba(224,138,0,.34)}
+.tab{font-size:13.5px;padding:11px 4px;gap:5px}
+.tab svg{width:15px;height:15px}
 
-  /* STOCK CARD */
-  .stock-card {
-    background: var(--surface); border-radius: var(--radius);
-    padding: 22px 20px 18px; margin-bottom: 14px; text-align: center;
-    box-shadow: 0 2px 12px rgba(0,0,0,0.06); border: 1px solid var(--border);
-    position: relative; overflow: hidden;
-  }
-  .stock-card::before {
-    content: ''; position: absolute; top: 0; left: 0; right: 0; height: 4px;
-    background: linear-gradient(90deg, var(--blue), var(--green));
-  }
-  .stock-label { font-size: 12px; color: var(--text3); margin-bottom: 10px; text-transform: uppercase; letter-spacing: 0.8px; }
-  .stock-num { font-family: 'IBM Plex Mono', monospace; font-size: 68px; font-weight: 600; line-height: 1; color: var(--blue); }
-  .stock-num.low   { color: var(--warning); }
-  .stock-num.empty { color: var(--danger); }
-  .stock-unit { font-size: 18px; color: var(--text2); margin-top: 6px; }
+/* ══ FORM ══ */
+.form{background:var(--card);border:1px solid var(--line);border-radius:13px;padding:15px;box-shadow:var(--sh)}
+.fld{margin-bottom:14px}
+.fld-l{display:block;font-size:12px;font-weight:700;color:var(--tx2);margin-bottom:6px}
+.fld-l .req{color:var(--dang)}
+.fld input,.fld select{width:100%;background:#fff;border:1.5px solid var(--line);border-radius:9px;
+      padding:12px 13px;color:var(--tx);font-family:var(--sans);font-size:15.5px;outline:none;transition:.15s}
+.fld input:focus,.fld select:focus{border-color:var(--blue);box-shadow:0 0 0 3px rgba(0,174,239,.16)}
+.md-in .fld input:focus,.md-in .fld select:focus{border-color:var(--green);box-shadow:0 0 0 3px rgba(141,198,63,.2)}
+.md-adj .fld input:focus,.md-adj .fld select:focus{border-color:var(--warn);box-shadow:0 0 0 3px rgba(224,138,0,.2)}
+.md-adj .step-b{color:#B06C00}
+.md-adj .step-b:active{background:var(--warn-l)}
+.md-adj .submit{background:var(--warn);color:#fff;box-shadow:0 3px 11px rgba(224,138,0,.38)}
+.adj-cmp{background:var(--warn-l);border:1px solid #F0CE7A;border-radius:10px;padding:12px 14px;margin-bottom:14px;display:none}
+.adj-cmp.on{display:block}
+.adj-row{display:flex;align-items:center;justify-content:space-around;gap:8px}
+.adj-cell{text-align:center;flex:1}
+.adj-lb{font-size:10.5px;color:#8A6410;font-weight:700;margin-bottom:3px}
+.adj-vl{font-size:25px;font-weight:700;font-family:var(--mono);line-height:1;color:#7A5400}
+.adj-ar{font-size:19px;color:#B08000;flex-shrink:0}
+.adj-df{font-size:15px;font-weight:700;font-family:var(--mono)}
+.adj-df.up{color:var(--green-d)}.adj-df.dn{color:var(--dang)}.adj-df.eq{color:var(--tx3)}
+.fld select{cursor:pointer;font-weight:500;appearance:none;-webkit-appearance:none;padding-right:38px;
+  background-image:url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%235A7C8E' stroke-width='2.5' stroke-linecap='round'%3e%3cpath d='M6 9l6 6 6-6'/%3e%3c/svg%3e");
+  background-repeat:no-repeat;background-position:right 12px center;background-size:17px}
+.step{display:flex;align-items:center;gap:10px}
+.step-b{width:54px;height:54px;border-radius:11px;border:1.5px solid var(--line2);background:#fff;
+        font-size:27px;font-weight:700;color:var(--blue-dd);cursor:pointer;display:grid;place-items:center;
+        flex-shrink:0;transition:.12s;user-select:none;line-height:1}
+.md-in .step-b{color:var(--green-dd)}
+.step-b:active{transform:scale(.92);background:var(--blue-l)}
+.md-in .step-b:active{background:var(--green-l)}
+.step-b:disabled{opacity:.32;cursor:not-allowed}
+.step input{text-align:center;font-size:27px;font-weight:700;font-family:var(--mono);padding:12px 4px}
+.hint{font-size:12px;color:var(--tx3);margin-top:6px;line-height:1.5}
+.hint.warn{color:var(--warn);font-weight:600}
+.hint.err{color:var(--dang);font-weight:600}
+.submit{width:100%;padding:16px;border-radius:11px;border:none;background:var(--blue);color:#fff;
+        font-family:var(--sans);font-size:17px;font-weight:700;cursor:pointer;margin-top:4px;transition:.15s;
+        display:flex;align-items:center;justify-content:center;gap:8px;box-shadow:0 3px 11px rgba(0,174,239,.36)}
+.md-in .submit{background:var(--green);color:var(--green-dd);box-shadow:0 3px 11px rgba(141,198,63,.38)}
+.submit:active{transform:scale(.98)}
+.submit:disabled{opacity:.45;cursor:not-allowed;box-shadow:none}
+.submit svg{width:19px;height:19px;stroke:currentColor;fill:none;stroke-width:2.6;stroke-linecap:round;stroke-linejoin:round}
 
-  .minmax-bar {
-    display: flex; justify-content: center; align-items: stretch;
-    gap: 16px; margin-top: 14px; padding-top: 14px; border-top: 1px dashed var(--border);
-  }
-  .minmax-item { text-align: center; flex: 1; }
-  .minmax-label { font-size: 10px; color: var(--text3); text-transform: uppercase; letter-spacing: 0.5px; }
-  .minmax-val { font-family: 'IBM Plex Mono', monospace; font-size: 20px; font-weight: 700; margin-top: 4px; }
-  .minmax-val.min-val { color: var(--danger); }
-  .minmax-val.max-val { color: var(--green-dk); }
-  .minmax-divider { width: 1px; background: var(--border); align-self: stretch; flex-shrink: 0; }
+/* ══ SUCCESS ══ */
+.ok{display:none;text-align:center;padding:32px 20px;background:var(--card);border-radius:13px;
+    border:1px solid var(--line);box-shadow:var(--sh2)}
+.ok.on{display:block}
+.ok-i{width:74px;height:74px;border-radius:50%;background:var(--green);display:grid;place-items:center;
+      margin:0 auto 17px;animation:pop .4s cubic-bezier(.2,1.4,.4,1)}
+@keyframes pop{0%{transform:scale(0)}100%{transform:scale(1)}}
+.ok-i svg{width:37px;height:37px;stroke:#fff;fill:none;stroke-width:3.4;stroke-linecap:round;stroke-linejoin:round}
+.ok-t{font-size:22px;font-weight:700;color:var(--green-dd);margin-bottom:6px}
+.ok-d{font-size:14px;color:var(--tx2);margin-bottom:19px;line-height:1.65}
+.ok-box{background:var(--bg);border-radius:11px;padding:14px;margin-bottom:17px}
+.ok-r{display:flex;justify-content:space-between;font-size:13.5px;padding:5px 0;gap:12px}
+.ok-r-k{color:var(--tx2);flex-shrink:0}
+.ok-r-v{font-weight:700;font-family:var(--mono);text-align:right;word-break:break-word}
+.ok-warn{background:var(--warn-l);border:1px solid #F0CE7A;border-radius:9px;padding:11px 13px;
+         font-size:12.5px;color:#8A6410;margin-bottom:17px;text-align:left;line-height:1.6;display:none}
+.ok-warn.on{display:block}
+.ok-btns{display:flex;gap:8px}
+.ok-btn{flex:1;padding:13px;border-radius:9px;border:1.5px solid var(--line2);background:#fff;
+        font-family:var(--sans);font-size:14px;font-weight:700;cursor:pointer;color:var(--tx)}
+.ok-btn.pri{background:var(--blue);border-color:var(--blue);color:#fff}
 
-  .stock-warn {
-    margin-top: 10px; font-size: 12px; padding: 5px 14px;
-    border-radius: 20px; display: inline-block; font-weight: 500;
-  }
-  .stock-warn.low   { background: rgba(245,158,11,0.12); color: var(--warning); }
-  .stock-warn.empty { background: rgba(229,57,53,0.10);  color: var(--danger); }
+/* ══ LIST VIEW ══ */
+.alert{background:var(--warn-l);border:1px solid #F0CE7A;border-left:5px solid var(--warn);border-radius:10px;
+       padding:11px 13px;margin-bottom:12px;display:none;gap:9px;align-items:flex-start}
+.alert.on{display:flex}
+.alert.crit{background:var(--dang-l);border-color:#F2B5AF;border-left-color:var(--dang)}
+.alert svg{width:18px;height:18px;flex-shrink:0;margin-top:1px;stroke:var(--warn);fill:none;stroke-width:2.3;stroke-linecap:round;stroke-linejoin:round}
+.alert.crit svg{stroke:var(--dang)}
+.alert-t{font-weight:700;font-size:13.5px;color:#7A5400;margin-bottom:1px}
+.alert.crit .alert-t{color:#9E2318}
+.alert-d{font-size:12.5px;color:#8A6410;line-height:1.55}
+.alert.crit .alert-d{color:#A63428}
 
-  /* INFO */
-  .info-row {
-    display: flex; gap: 10px; margin-bottom: 14px;
-  }
-  .info-card {
-    flex: 1; background: var(--surface); border: 1px solid var(--border);
-    border-radius: var(--radius-sm); padding: 12px 14px;
-    box-shadow: 0 1px 4px rgba(0,0,0,0.04);
-  }
-  .info-label { font-size: 10px; color: var(--text3); margin-bottom: 4px; text-transform: uppercase; letter-spacing: 0.5px; }
-  .info-value { font-size: 14px; font-weight: 600; color: var(--text); }
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:7px;margin-bottom:12px}
+.st{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:10px 9px;
+    cursor:pointer;transition:.15s;border-top:3px solid var(--blue);text-align:center}
+.st:active{transform:scale(.97)}
+.st.sel{box-shadow:0 0 0 2px rgba(0,174,239,.3)}
+.st-l{font-size:10px;color:var(--tx2);font-weight:700;margin-bottom:4px}
+.st-v{font-size:23px;font-weight:700;font-family:var(--mono);line-height:1}
+.b-a{border-top-color:var(--blue)}.b-o{border-top-color:var(--green)}
+.b-w{border-top-color:var(--warn)}.b-x{border-top-color:var(--dang)}
+.c-a{color:var(--blue)}.c-o{color:var(--green-d)}.c-w{color:var(--warn)}.c-x{color:var(--dang)}
 
-  /* FORM */
-  .form-section {
-    background: var(--surface); border: 1px solid var(--border);
-    border-radius: var(--radius); padding: 18px; margin-bottom: 14px;
-    box-shadow: 0 1px 6px rgba(0,0,0,0.04);
-  }
-  .form-title {
-    font-size: 12px; font-weight: 700; color: var(--blue);
-    margin-bottom: 14px; text-transform: uppercase; letter-spacing: 0.8px;
-    display: flex; align-items: center; gap: 6px;
-  }
-  .form-title::before {
-    content: ''; display: inline-block; width: 3px; height: 14px; border-radius: 2px;
-    background: linear-gradient(180deg, var(--blue), var(--green));
-  }
-  .form-group { margin-bottom: 14px; }
-  .form-group:last-child { margin-bottom: 0; }
-  .form-label { font-size: 13px; color: var(--text2); margin-bottom: 6px; display: block; font-weight: 500; }
-  .form-input {
-    width: 100%; background: var(--bg); border: 1.5px solid var(--border);
-    border-radius: var(--radius-sm); padding: 12px 14px;
-    color: var(--text); font-family: 'Sarabun', sans-serif; font-size: 15px; outline: none;
-    transition: border-color 0.15s;
-  }
-  .form-input:focus { border-color: var(--blue); background: white; }
-  .form-input::placeholder { color: var(--text3); }
-  .form-input:disabled { opacity: 0.4; background: #eee; }
+.tb{display:flex;gap:7px;margin-bottom:11px}
+.tb input,.tb select{background:var(--card);border:1.5px solid var(--line);border-radius:9px;padding:11px 12px;
+      color:var(--tx);font-family:var(--sans);font-size:15px;outline:none;box-shadow:var(--sh)}
+.tb input{flex:1;min-width:0}
+.tb input:focus,.tb select:focus{border-color:var(--blue)}
+.tb select{flex-shrink:0;width:130px;cursor:pointer;font-weight:500;appearance:none;-webkit-appearance:none;padding-right:32px;
+  background-image:url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%235A7C8E' stroke-width='2.5' stroke-linecap='round'%3e%3cpath d='M6 9l6 6 6-6'/%3e%3c/svg%3e");
+  background-repeat:no-repeat;background-position:right 10px center;background-size:16px}
+.cnt{font-size:12.5px;color:var(--tx2);margin-bottom:9px;font-weight:500}
+.list{display:flex;flex-direction:column;gap:8px}
+.li{background:var(--card);border:1px solid var(--line);border-radius:11px;padding:12px 14px;
+    box-shadow:var(--sh);position:relative;overflow:hidden;cursor:pointer;transition:.13s;
+    display:flex;align-items:center;gap:12px}
+.li:active{transform:scale(.985);background:var(--blue-l)}
+.li::before{content:'';position:absolute;left:0;top:0;bottom:0;width:4px}
+.li.s-ok::before{background:var(--green)}.li.s-low::before{background:var(--warn)}
+.li.s-out::before{background:var(--dang)}.li.s-over::before{background:var(--blue)}
+.li.s-unset::before{background:var(--tx3)}
+.li-q{min-width:56px;text-align:center;flex-shrink:0}
+.li-qv{font-size:24px;font-weight:700;font-family:var(--mono);line-height:1}
+.li-qu{font-size:10px;color:var(--tx2);font-weight:600;margin-top:1px}
+.li-m{flex:1;min-width:0}
+.li-n{font-size:14.5px;font-weight:700;line-height:1.35;overflow:hidden;text-overflow:ellipsis;
+      display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical}
+.li-c{font-family:var(--mono);font-size:11px;color:var(--tx2);font-weight:600;margin-top:3px}
+.li-r{flex-shrink:0;display:flex;flex-direction:column;align-items:flex-end;gap:5px}
+.li-ar{width:9px;height:9px;border-right:2.2px solid var(--tx3);border-bottom:2.2px solid var(--tx3);transform:rotate(-45deg)}
 
-  .qty-control { display: flex; align-items: center; gap: 10px; }
-  .qty-btn {
-    width: 46px; height: 46px; border-radius: 50%;
-    border: 2px solid var(--blue); background: white; color: var(--blue);
-    font-size: 24px; display: flex; align-items: center; justify-content: center;
-    cursor: pointer; flex-shrink: 0; user-select: none; font-weight: 700; transition: all 0.12s;
-  }
-  .qty-btn:active { background: var(--blue); color: white; transform: scale(0.90); }
-  .qty-input {
-    flex: 1; text-align: center; font-family: 'IBM Plex Mono', monospace;
-    font-size: 28px; font-weight: 600; background: var(--bg);
-    border: 1.5px solid var(--border); border-radius: var(--radius-sm);
-    padding: 8px; color: var(--text); outline: none;
-  }
-  .qty-input:focus { border-color: var(--blue); background: white; }
-  .qty-input:disabled { opacity: 0.4; }
+.empty{text-align:center;padding:48px 20px;color:var(--tx3);font-size:14px}
+.empty svg{width:42px;height:42px;stroke:var(--line2);fill:none;stroke-width:1.7;margin-bottom:11px}
 
-  /* BOTTOM */
-  .bottom-bar {
-    position: fixed; bottom: 0; left: 50%; transform: translateX(-50%);
-    width: 100%; max-width: 430px; padding: 12px 16px 16px;
-    background: white; border-top: 1px solid var(--border);
-    box-shadow: 0 -4px 16px rgba(0,0,0,0.08);
-  }
-  .btn-submit {
-    width: 100%;
-    background: linear-gradient(135deg, var(--blue) 0%, var(--green) 100%);
-    color: white; border: none; border-radius: 12px; padding: 16px;
-    font-family: 'Sarabun', sans-serif; font-size: 17px; font-weight: 700;
-    cursor: pointer; box-shadow: 0 4px 14px rgba(0,174,239,0.35);
-    transition: opacity 0.15s, transform 0.1s;
-  }
-  .btn-submit:active { transform: scale(0.98); opacity: 0.9; }
-  .btn-submit:disabled { background: var(--border); color: var(--text3); box-shadow: none; cursor: default; transform: none; }
+/* ══ HISTORY ══ */
+.hr{background:var(--card);border:1px solid var(--line);border-radius:11px;padding:12px 14px;
+    box-shadow:var(--sh);display:flex;gap:12px;align-items:flex-start;position:relative;overflow:hidden}
+.hr::before{content:'';position:absolute;left:0;top:0;bottom:0;width:4px}
+.hr.t-out::before{background:var(--dang)}.hr.t-in::before{background:var(--green)}
+.hr.t-adj::before{background:var(--warn)}
+.hr-tag{font-size:9.5px;font-weight:700;padding:2px 7px;border-radius:99px;margin-left:5px;
+        vertical-align:middle;white-space:nowrap}
+.hr-tag.out{background:var(--dang-l);color:#A82A20}
+.hr-tag.in{background:var(--green-l);color:var(--green-dd)}
+.hr-tag.adj{background:var(--warn-l);color:#8A5600}
+.hr-qv.adj{color:var(--warn)}
+.hr-q{min-width:62px;text-align:center;flex-shrink:0}
+.hr-qv{font-size:19px;font-weight:700;font-family:var(--mono);line-height:1}
+.hr-qv.out{color:var(--dang)}.hr-qv.in{color:var(--green-d)}
+.hr-qu{font-size:10px;color:var(--tx2);font-weight:600;margin-top:2px}
+.hr-m{flex:1;min-width:0}
+.hr-n{font-size:14px;font-weight:700;line-height:1.35}
+.hr-c{font-family:var(--mono);font-size:10.5px;color:var(--tx2);font-weight:600;margin-top:2px}
+.hr-p{font-size:12.5px;color:var(--tx2);margin-top:5px;line-height:1.5}
+.hr-t{font-size:10.5px;color:var(--tx3);margin-top:3px;font-family:var(--mono)}
 
-  /* MODAL */
-  .modal-overlay {
-    position: fixed; inset: 0; background: rgba(0,0,0,0.45);
-    z-index: 50; display: none; align-items: flex-end; padding: 16px;
-  }
-  .modal-overlay.show { display: flex; }
-  .modal-box { background: white; border-radius: 20px; width: 100%; padding: 24px; box-shadow: 0 -4px 30px rgba(0,0,0,0.15); }
-  .modal-title { font-size: 18px; font-weight: 700; margin-bottom: 12px; color: var(--text); }
-  .modal-body { font-size: 14px; color: var(--text2); line-height: 2; margin-bottom: 22px; }
-  .modal-highlight { color: var(--blue); font-weight: 700; }
-  .modal-btns { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
-  .btn-cancel {
-    padding: 14px; border-radius: 10px; border: 1.5px solid var(--border);
-    background: var(--bg); color: var(--text2);
-    font-family: 'Sarabun', sans-serif; font-size: 15px; cursor: pointer; font-weight: 600;
-  }
-  .btn-confirm {
-    padding: 14px; border-radius: 10px; border: none;
-    background: linear-gradient(135deg, var(--blue), var(--green)); color: white;
-    font-family: 'Sarabun', sans-serif; font-size: 15px; font-weight: 700; cursor: pointer;
-  }
+/* ══ BOTTOM NAV ══ */
+.nav{position:fixed;left:0;right:0;bottom:0;height:calc(var(--nav-h) + env(safe-area-inset-bottom));
+     padding-bottom:env(safe-area-inset-bottom);background:#fff;border-top:1px solid var(--line);
+     display:flex;z-index:50;box-shadow:0 -2px 14px rgba(18,48,63,.09)}
+.nv{flex:1;border:none;background:transparent;font-family:var(--sans);font-size:11px;font-weight:700;
+    color:var(--tx3);cursor:pointer;display:flex;flex-direction:column;align-items:center;justify-content:center;
+    gap:3px;transition:.15s;position:relative}
+.nv svg{width:21px;height:21px;stroke:currentColor;fill:none;stroke-width:2.1;stroke-linecap:round;stroke-linejoin:round}
+.nv.on{color:var(--blue)}
+.nv.on::after{content:'';position:absolute;top:0;left:50%;transform:translateX(-50%);width:30px;height:3px;
+              background:var(--blue);border-radius:0 0 4px 4px}
+.nv-dot{position:absolute;top:7px;right:calc(50% - 19px);min-width:17px;height:17px;padding:0 4px;
+        background:var(--dang);color:#fff;border-radius:99px;font-size:10px;font-weight:700;
+        display:none;align-items:center;justify-content:center;font-family:var(--mono)}
+.nv-dot.on{display:flex}
 
-  /* TOAST */
-  .toast {
-    position: fixed; bottom: 90px; left: 50%;
-    transform: translateX(-50%) translateY(20px);
-    background: var(--green); color: white;
-    padding: 13px 22px; border-radius: 40px; font-size: 14px; font-weight: 600;
-    z-index: 100; opacity: 0; transition: all 0.25s;
-    white-space: nowrap; max-width: 90%; pointer-events: none;
-    box-shadow: 0 4px 16px rgba(0,0,0,0.15);
-  }
-  .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
-  .toast.error { background: var(--danger); }
+/* ══ MODAL / TOAST ══ */
+.ov{display:none;position:fixed;inset:0;background:rgba(10,30,45,.55);z-index:100;
+    align-items:center;justify-content:center;padding:18px;backdrop-filter:blur(3px)}
+.ov.on{display:flex}
+.mdl{background:#fff;border-radius:14px;padding:21px;width:100%;max-width:370px;box-shadow:var(--sh2);animation:up .2s ease}
+@keyframes up{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:translateY(0)}}
+.mdl-t{font-size:16.5px;font-weight:700;color:var(--blue-dd);margin-bottom:13px}
+.mdl-t.in{color:var(--green-dd)}
+.mdl-box{background:var(--blue-l);border-radius:10px;padding:13px;margin-bottom:17px}
+.mdl-box.in{background:var(--green-l)}
+.mdl-r{display:flex;justify-content:space-between;font-size:13.5px;padding:4px 0;gap:12px}
+.mdl-k{color:var(--tx2);flex-shrink:0}
+.mdl-v{font-weight:700;text-align:right;word-break:break-word}
+.mdl-btns{display:flex;gap:8px}
+.mdl-b{flex:1;padding:13px;border-radius:9px;border:1.5px solid var(--line2);background:#fff;
+       font-family:var(--sans);font-size:15px;font-weight:700;cursor:pointer;color:var(--tx)}
+.mdl-b.pri{background:var(--blue);border-color:var(--blue);color:#fff}
+.mdl-b.pri.in{background:var(--green);border-color:var(--green);color:var(--green-dd)}
+.mdl-t.adj{color:#B06C00}
+.mdl-box.adj{background:var(--warn-l)}
+.mdl-b.pri.adj{background:var(--warn);border-color:var(--warn);color:#fff}
 
-  /* LOADING / ERROR */
-  .loading-wrap {
-    display: flex; flex-direction: column; align-items: center; justify-content: center;
-    padding: 100px 20px; gap: 16px; color: var(--text3); font-size: 14px;
-  }
-  .spinner {
-    width: 42px; height: 42px; border: 3px solid var(--border);
-    border-top-color: var(--blue); border-radius: 50%;
-    animation: spin 0.7s linear infinite;
-  }
-  @keyframes spin { to { transform: rotate(360deg); } }
-  .error-wrap { text-align: center; padding: 80px 20px; }
-  .error-icon { font-size: 48px; margin-bottom: 14px; }
-  .error-title { font-size: 18px; font-weight: 700; color: var(--text); margin-bottom: 8px; }
-  .error-sub { font-size: 14px; color: var(--text2); line-height: 1.7; white-space: pre-line; }
-
-  /* SUCCESS */
-  .success-wrap {
-    display: none; flex-direction: column; align-items: center; justify-content: center;
-    min-height: 100vh; padding: 40px 24px; text-align: center; gap: 14px; background: var(--bg);
-  }
-  .success-wrap.show { display: flex; }
-  .success-circle {
-    width: 90px; height: 90px; border-radius: 50%;
-    background: linear-gradient(135deg, var(--blue), var(--green));
-    display: flex; align-items: center; justify-content: center;
-    font-size: 42px; color: white; box-shadow: 0 6px 24px rgba(0,174,239,0.35);
-  }
-  .success-title { font-size: 26px; font-weight: 700; color: var(--text); }
-  .success-sub { font-size: 15px; color: var(--text2); line-height: 1.8; }
-  .success-remaining {
-    font-family: 'IBM Plex Mono', monospace; font-size: 13px; color: var(--text3);
-    background: white; border: 1px solid var(--border); border-radius: var(--radius-sm);
-    padding: 10px 20px; margin-top: 4px;
-  }
-  .btn-reload {
-    margin-top: 10px; padding: 13px 36px; border-radius: 12px;
-    border: 2px solid var(--blue); background: white; color: var(--blue);
-    font-family: 'Sarabun', sans-serif; font-size: 15px; font-weight: 700; cursor: pointer;
-  }
-  .btn-reload:active { background: var(--blue); color: white; }
+.toast{position:fixed;left:50%;bottom:calc(var(--nav-h) + 20px);transform:translateX(-50%) translateY(90px);
+       background:var(--tx);color:#fff;padding:12px 19px;border-radius:10px;font-size:14px;font-weight:600;
+       z-index:300;opacity:0;transition:.28s;pointer-events:none;max-width:88%;text-align:center;box-shadow:var(--sh2)}
+.toast.on{transform:translateX(-50%) translateY(0);opacity:1}
+.toast.err{background:var(--dang)}
 </style>
 </head>
 <body>
 
-<div class="loading-wrap" id="loadingState">
-  <div class="spinner"></div>
-  <span>กำลังโหลดข้อมูลอะไหล่...</span>
-</div>
+<header class="hd">
+  <button class="hd-back" id="back" onclick="goList()">
+    <svg viewBox="0 0 24 24"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+  </button>
+  <div class="hd-tx">
+    <div class="hd-t" id="hd-t">ระบบอะไหล่</div>
+    <div class="hd-s">บริษัท เสริมสุข จำกัด (มหาชน)</div>
+  </div>
+  <button class="hd-r" id="refresh" onclick="reloadAll()">
+    <svg viewBox="0 0 24 24"><path d="M4 4v5h.6M19.9 11A8 8 0 004.6 9m0 0H9m11 11v-5h-.6m0 0a8 8 0 01-15.3-2m15.3 2H15"/></svg>
+  </button>
+</header>
 
-<div class="error-wrap" id="errorState" style="display:none">
-  <div class="error-icon">⚠️</div>
-  <div class="error-title" id="errorTitle">ไม่พบอะไหล่</div>
-  <div class="error-sub" id="errorSub">–</div>
-</div>
+<div class="wrap">
 
-<div id="mainPage" style="display:none">
-  <div class="header">
-    <div class="header-inner">
-      <div class="header-logo" id="hdrIcon">⚙️</div>
-      <div>
-        <div class="header-title" id="hdrName">–</div>
-        <div class="header-sub" id="hdrId">–</div>
+<!-- ════ VIEW 1: PART DETAIL ════ -->
+<div class="view" id="v-part">
+  <div class="load" id="p-load"><div class="spin-el"></div>กำลังโหลดข้อมูลอะไหล่...</div>
+
+  <div class="err" id="p-err" style="display:none">
+    <div class="err-i">⚠️</div>
+    <div class="err-t">ไม่พบอะไหล่</div>
+    <div class="err-d" id="p-err-d"></div>
+    <button class="err-b" onclick="goList()">ดูรายการอะไหล่ทั้งหมด</button>
+  </div>
+
+  <div id="p-main" style="display:none">
+    <div class="pcard" id="pcard">
+      <div class="p-top">
+        <div style="flex:1;min-width:0">
+          <span class="p-code" id="p-code">—</span>
+          <div class="p-name" id="p-name">—</div>
+        </div>
+        <span class="bdg" id="p-bdg"></span>
+      </div>
+      <div class="p-grid">
+        <div class="qbox">
+          <div class="qbox-l">คงเหลือ</div>
+          <div class="qbox-v" id="p-qty">—</div>
+          <div class="qbox-u" id="p-unit">—</div>
+        </div>
+        <div>
+          <div class="mr"><span class="mr-k">ขั้นต่ำ (Min)</span><span class="mr-v" id="p-min">—</span></div>
+          <div class="mr"><span class="mr-k">สูงสุด (Max)</span><span class="mr-v" id="p-max">—</span></div>
+          <div id="p-bar-w" style="display:none"><div class="bar"><div class="bar-f" id="p-bar"></div></div></div>
+        </div>
+      </div>
+      <div class="p-note" id="p-note-w" style="display:none">
+        <b>หมายเหตุ:</b> <span id="p-note"></span>
+      </div>
+    </div>
+
+    <div id="p-action">
+      <div class="tabs">
+        <button class="tab on" id="tab-out" onclick="setMode('out')">
+          <svg viewBox="0 0 24 24"><path d="M12 19V5M5 12l7-7 7 7"/></svg>เบิกออก
+        </button>
+        <button class="tab" id="tab-in" onclick="setMode('in')">
+          <svg viewBox="0 0 24 24"><path d="M12 5v14M19 12l-7 7-7-7"/></svg>รับเข้า
+        </button>
+        <button class="tab" id="tab-adj" onclick="setMode('adj')">
+          <svg viewBox="0 0 24 24"><path d="M9 3H5a2 2 0 00-2 2v4m6-6h10a2 2 0 012 2v4M9 3v18m0 0H5a2 2 0 01-2-2v-4m6 6h10a2 2 0 002-2v-4"/></svg>ปรับยอด
+        </button>
+      </div>
+
+      <div class="form" id="form">
+        <div class="adj-cmp" id="adj-cmp">
+          <div class="adj-row">
+            <div class="adj-cell">
+              <div class="adj-lb">ยอดในระบบ</div>
+              <div class="adj-vl" id="adj-before">—</div>
+            </div>
+            <div class="adj-ar">→</div>
+            <div class="adj-cell">
+              <div class="adj-lb">ยอดใหม่</div>
+              <div class="adj-vl" id="adj-after">—</div>
+            </div>
+            <div class="adj-ar">=</div>
+            <div class="adj-cell">
+              <div class="adj-lb">ผลต่าง</div>
+              <div class="adj-df eq" id="adj-diff">0</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="fld">
+          <label class="fld-l" id="l-qty">จำนวนที่ต้องการเบิก <span class="req">*</span></label>
+          <div class="step">
+            <button class="step-b" onclick="bump(-1)" id="minus">−</button>
+            <input type="number" id="qty" value="1" min="1" inputmode="numeric" oninput="checkQty()">
+            <button class="step-b" onclick="bump(1)" id="plus">+</button>
+          </div>
+          <div class="hint" id="qty-hint"></div>
+        </div>
+
+        <div class="fld">
+          <label class="fld-l" id="l-who">ชื่อผู้เบิก <span class="req">*</span></label>
+          <select id="who"><option value="">— เลือกชื่อ —</option></select>
+          <div class="hint" id="who-hint">หากไม่พบชื่อ เลือก "อื่นๆ" เพื่อพิมพ์เอง</div>
+        </div>
+
+        <div class="fld" id="who-o-w" style="display:none">
+          <label class="fld-l">ระบุชื่อ <span class="req">*</span></label>
+          <input type="text" id="who-o" placeholder="พิมพ์ชื่อ-สกุล">
+        </div>
+
+        <div class="fld">
+          <label class="fld-l" id="l-note">เหตุผล / งานที่ใช้</label>
+          <input type="text" id="note" placeholder="เช่น เปลี่ยนตามรอบ PM">
+        </div>
+
+        <button class="submit" id="submit" onclick="askConfirm()">
+          <svg viewBox="0 0 24 24" id="sub-ico"><path d="M20 6L9 17l-5-5"/></svg>
+          <span id="sub-tx">ยืนยันการเบิก</span>
+        </button>
+      </div>
+    </div>
+
+    <div class="ok" id="ok">
+      <div class="ok-i"><svg viewBox="0 0 24 24"><path d="M20 6L9 17l-5-5"/></svg></div>
+      <div class="ok-t" id="ok-t">สำเร็จ!</div>
+      <div class="ok-d" id="ok-d"></div>
+      <div class="ok-box">
+        <div class="ok-r"><span class="ok-r-k">อะไหล่</span><span class="ok-r-v" id="ok-name"></span></div>
+        <div class="ok-r"><span class="ok-r-k" id="ok-qk">จำนวน</span><span class="ok-r-v" id="ok-qty"></span></div>
+        <div class="ok-r"><span class="ok-r-k">คงเหลือ</span><span class="ok-r-v" id="ok-rem"></span></div>
+        <div class="ok-r"><span class="ok-r-k" id="ok-wk">ผู้เบิก</span><span class="ok-r-v" id="ok-who"></span></div>
+      </div>
+      <div class="ok-warn" id="ok-warn"></div>
+      <div class="ok-btns">
+        <button class="ok-btn" onclick="resetForm()">ทำรายการอีก</button>
+        <button class="ok-btn pri" onclick="goList()">ดูรายการทั้งหมด</button>
       </div>
     </div>
   </div>
-  <div class="company-strip">บริษัท เสริมสุข จำกัด (มหาชน) · ระบบเบิกอะไหล่</div>
+</div>
 
-  <div class="content">
+<!-- ════ VIEW 2: LIST ════ -->
+<div class="view" id="v-list">
+  <div class="load" id="l-load"><div class="spin-el"></div>กำลังโหลดสต็อค...</div>
 
-    <div class="stock-card">
-      <div class="stock-label">จำนวนคงเหลือ</div>
-      <div class="stock-num" id="stockNum">–</div>
-      <div class="stock-unit" id="stockUnit">–</div>
-      <div class="minmax-bar">
-        <div class="minmax-item">
-          <div class="minmax-label">ขั้นต่ำ (Min)</div>
-          <div class="minmax-val min-val" id="stockMin">–</div>
-        </div>
-        <div class="minmax-divider"></div>
-        <div class="minmax-item">
-          <div class="minmax-label">สูงสุด (Max)</div>
-          <div class="minmax-val max-val" id="stockMax">–</div>
-        </div>
-      </div>
-      <div class="stock-warn" id="stockWarn" style="display:none"></div>
+  <div id="l-main" style="display:none">
+    <div class="alert" id="alert">
+      <svg viewBox="0 0 24 24"><path d="M10.3 3.9L1.8 18a2 2 0 001.7 3h16.9a2 2 0 001.7-3L13.7 3.9a2 2 0 00-3.4 0zM12 9v4M12 17h.01"/></svg>
+      <div><div class="alert-t" id="alert-t"></div><div class="alert-d" id="alert-d"></div></div>
     </div>
 
-    <div class="info-row">
-      <div class="info-card">
-        <div class="info-label">หน่วย</div>
-        <div class="info-value" id="infoUnit">–</div>
-      </div>
-      <div class="info-card" id="noteCard" style="display:none">
-        <div class="info-label">หมายเหตุ</div>
-        <div class="info-value" id="infoNote">–</div>
-      </div>
+    <div class="stats" id="stats"></div>
+
+    <div class="tb">
+      <input type="text" id="q" placeholder="ค้นหารหัส/ชื่อ..." oninput="renderList()">
+      <select id="fs" onchange="renderList()">
+        <option value="">ทุกสถานะ</option>
+        <option value="ok">ปกติ</option>
+        <option value="low">ใกล้หมด</option>
+        <option value="out">หมดแล้ว</option>
+        <option value="over">เกิน Max</option>
+        <option value="unset">ยังไม่ตั้งค่า</option>
+      </select>
     </div>
 
-    <div class="form-section">
-      <div class="form-title">ข้อมูลการเบิก</div>
-      <div class="form-group">
-        <label class="form-label">จำนวนที่ต้องการเบิก</label>
-        <div class="qty-control">
-          <div class="qty-btn" onclick="adjustQty(-1)">−</div>
-          <input class="qty-input" type="number" id="withdrawQty" value="1" min="1">
-          <div class="qty-btn" onclick="adjustQty(+1)">+</div>
-        </div>
-      </div>
-      <div class="form-group">
-        <label class="form-label">ชื่อผู้เบิก <span style="color:var(--danger)">*</span></label>
-        <input class="form-input" type="text" id="requester" placeholder="ชื่อ-นามสกุล หรือรหัสพนักงาน">
-      </div>
-      <div class="form-group">
-        <label class="form-label">เหตุผล / งานที่ใช้</label>
-        <input class="form-input" type="text" id="reason" placeholder="เช่น PM, เปลี่ยนชิ้นส่วนชำรุด">
-      </div>
-    </div>
-
-  </div>
-
-  <div class="bottom-bar">
-    <button class="btn-submit" id="btnSubmit" onclick="confirmWithdraw()">ยืนยันการเบิก</button>
+    <div class="cnt" id="cnt"></div>
+    <div class="list" id="list"></div>
   </div>
 </div>
 
-<div class="success-wrap" id="successWrap">
-  <div class="success-circle">✓</div>
-  <div class="success-title">เบิกสำเร็จ!</div>
-  <div class="success-sub" id="successSub">–</div>
-  <div class="success-remaining" id="successRemaining">–</div>
-  <button class="btn-reload" onclick="location.reload()">เบิกอีกครั้ง</button>
+<!-- ════ VIEW 3: HISTORY ════ -->
+<div class="view" id="v-hist">
+  <div class="load" id="h-load"><div class="spin-el"></div>กำลังโหลดประวัติ...</div>
+  <div id="h-main" style="display:none">
+    <div class="tb">
+      <input type="text" id="hq" placeholder="ค้นหารหัส/ชื่อ/ผู้ทำรายการ..." oninput="renderHist()">
+      <select id="hf" onchange="renderHist()">
+        <option value="">ทั้งหมด</option>
+        <option value="out">เบิกออก</option>
+        <option value="in">รับเข้า</option>
+        <option value="adj">ปรับยอด</option>
+      </select>
+    </div>
+    <div class="cnt" id="h-cnt"></div>
+    <div class="list" id="h-list"></div>
+  </div>
 </div>
 
-<div class="modal-overlay" id="modal">
-  <div class="modal-box">
-    <div class="modal-title">✅ ยืนยันการเบิก</div>
-    <div class="modal-body" id="modalBody">–</div>
-    <div class="modal-btns">
-      <button class="btn-cancel" onclick="closeModal()">ยกเลิก</button>
-      <button class="btn-confirm" onclick="doWithdraw()">ยืนยัน</button>
+</div><!-- /wrap -->
+
+<!-- ════ BOTTOM NAV ════ -->
+<nav class="nav">
+  <button class="nv" id="nv-part" onclick="switchView('part')">
+    <svg viewBox="0 0 24 24"><path d="M20.9 7.2a2 2 0 00-1-1.2l-7-3.9a2 2 0 00-1.9 0l-7 3.9a2 2 0 00-1 1.7v7.8a2 2 0 001 1.7l7 3.9a2 2 0 001.9 0l7-3.9a2 2 0 001-1.7V7.8z"/><path d="M3.3 7.3L12 12l8.7-4.7M12 22V12"/></svg>
+    อะไหล่นี้
+  </button>
+  <button class="nv" id="nv-list" onclick="switchView('list')">
+    <svg viewBox="0 0 24 24"><path d="M8 6h13M8 12h13M8 18h13M3 6h.01M3 12h.01M3 18h.01"/></svg>
+    รายการทั้งหมด
+    <span class="nv-dot" id="nv-dot">0</span>
+  </button>
+  <button class="nv" id="nv-hist" onclick="switchView('hist')">
+    <svg viewBox="0 0 24 24"><path d="M12 8v4l3 3"/><circle cx="12" cy="12" r="9"/></svg>
+    ประวัติ
+  </button>
+</nav>
+
+<!-- ════ CONFIRM MODAL ════ -->
+<div class="ov" id="ov">
+  <div class="mdl">
+    <div class="mdl-t" id="c-title">✅ ยืนยันการเบิก</div>
+    <div class="mdl-box" id="c-box">
+      <div class="mdl-r"><span class="mdl-k">อะไหล่</span><span class="mdl-v" id="c-name"></span></div>
+      <div class="mdl-r"><span class="mdl-k" id="c-qk">จำนวน</span><span class="mdl-v" id="c-qty"></span></div>
+      <div class="mdl-r"><span class="mdl-k">คงเหลือหลังทำรายการ</span><span class="mdl-v" id="c-after"></span></div>
+      <div class="mdl-r"><span class="mdl-k" id="c-wk">ผู้เบิก</span><span class="mdl-v" id="c-who"></span></div>
+    </div>
+    <div class="mdl-btns">
+      <button class="mdl-b" onclick="closeConfirm()">ยกเลิก</button>
+      <button class="mdl-b pri" id="c-ok" onclick="doSubmit()">ยืนยัน</button>
     </div>
   </div>
 </div>
@@ -355,155 +510,501 @@
 <div class="toast" id="toast"></div>
 
 <script>
-const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwM5c1aADn8utYSfI2JRqHpjvh6YWy-acY6IyW9eaTc2P4wVPyx9Xj6BdgLNeKogePa/exec';
-let partData = null;
+// ══════════════════════════════════════════════════════════
+// ⚙️ ตั้งค่า — ใส่ Web App URL ของ Apps Script (URL เดิม)
+// ══════════════════════════════════════════════════════════
+const API = 'https://script.google.com/macros/s/AKfycbx3-n8WSF6O3qApZAvj5II_7ddwmSKv876-MOI1Dq9C5oU2Jg-M3Xc_UPii2GBxF_oD/exec';
+// ══════════════════════════════════════════════════════════
 
-function getIcon(name) {
-  const n = (name || '').toLowerCase();
-  if (n.includes('สาย') || n.includes('belt'))                          return '〰️';
-  if (n.includes('ลูกปืน') || n.includes('bearing'))                    return '⚙️';
-  if (n.includes('น้ำมัน') || n.includes('oil'))                        return '🛢️';
-  if (n.includes('ซีล') || n.includes('seal'))                          return '🔴';
-  if (n.includes('สกรู') || n.includes('screw') || n.includes('น็อต')) return '🔩';
-  if (n.includes('ปั๊ม') || n.includes('pump'))                         return '💧';
-  if (n.includes('มอเตอร์') || n.includes('motor'))                     return '⚡';
-  if (n.includes('ฟิลเตอร์') || n.includes('filter'))                  return '🔲';
-  if (n.includes('วาล์ว') || n.includes('valve'))                       return '🎛️';
-  if (n.includes('เซ็นเซอร์') || n.includes('sensor'))                 return '📡';
-  return '⚙️';
+let PID    = new URLSearchParams(location.search).get('id');
+let part   = null;
+let parts  = [];
+let techs  = [];
+let hist   = [];
+let mode   = 'out';          // 'out' = เบิก, 'in' = รับเข้า
+let curView= 'part';
+let techsLoaded = false, histLoaded = false;
+
+const LBL = { ok:'ปกติ', low:'ใกล้หมด', out:'หมดสต็อค', over:'เกิน Max', unset:'ยังไม่ตั้งค่า' };
+const CLR = { ok:'#8DC63F', low:'#E08A00', out:'#D93B30', over:'#00AEEF', unset:'#93AEBF' };
+
+function api(action, p) {
+  const q = new URLSearchParams(Object.assign({ action: action }, p || {}));
+  return fetch(API + '?' + q.toString()).then(function (r) { return r.json(); });
+}
+function esc(s){return (s||'').toString().replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
+function statusOf(p){
+  if(p.status) return p.status;
+  if(p.qty<=0) return 'out';
+  if(p.min!==null && p.qty<p.min) return 'low';
+  if(p.max!==null && p.qty>p.max) return 'over';
+  if(p.min===null && p.max===null) return 'unset';
+  return 'ok';
 }
 
-function showError(title, sub) {
-  document.getElementById('loadingState').style.display = 'none';
-  document.getElementById('errorState').style.display = 'block';
-  document.getElementById('errorTitle').textContent = title;
-  document.getElementById('errorSub').textContent   = sub;
+/* ════ VIEW SWITCHING ════ */
+function switchView(v){
+  if(v==='part' && !PID){ v='list'; }
+  curView=v;
+  ['part','list','hist'].forEach(function(k){
+    document.getElementById('v-'+k).classList.toggle('on', k===v);
+    document.getElementById('nv-'+k).classList.toggle('on', k===v);
+  });
+  document.getElementById('back').classList.toggle('on', v==='part' && !!PID);
+  const t = document.getElementById('hd-t');
+  if(v==='part') t.textContent = part ? part.name : 'อะไหล่';
+  if(v==='list') t.textContent = 'รายการอะไหล่ทั้งหมด';
+  if(v==='hist'){ t.textContent = 'ประวัติการทำรายการ'; if(!histLoaded) loadHist(); }
+  window.scrollTo({top:0});
+}
+function goList(){ switchView('list'); }
+
+/* ════ LOAD ════ */
+function reloadAll(){
+  const btn=document.getElementById('refresh');
+  btn.classList.add('spin');
+  const jobs=[loadParts()];
+  if(PID) jobs.push(loadPart(PID));
+  if(histLoaded) jobs.push(loadHist(true));
+  Promise.all(jobs).then(function(){ btn.classList.remove('spin'); toast('อัปเดตข้อมูลแล้ว'); })
+                   .catch(function(){ btn.classList.remove('spin'); });
 }
 
-async function loadPart() {
-  const params = new URLSearchParams(window.location.search);
-  const partId = params.get('id');
-  if (!partId) { showError('ไม่ได้ระบุรหัสอะไหล่', 'URL ต้องมี ?id=รหัสอะไหล่\nเช่น page.html?id=P001'); return; }
-  try {
-    const res  = await fetch(`${SCRIPT_URL}?action=getPart&id=${encodeURIComponent(partId)}&t=${Date.now()}`);
-    const data = await res.json();
-    if (!data.success) { showError('ไม่พบอะไหล่', `ไม่พบรหัส "${partId}" ในระบบ`); return; }
-    partData = data.part;
-    renderPart(partData);
-  } catch (err) {
-    showError('เชื่อมต่อไม่สำเร็จ', 'ไม่สามารถดึงข้อมูลจาก Google Sheet ได้');
+function loadParts(){
+  return api('getAll').then(function(res){
+    if(!res.success) throw new Error(res.message);
+    parts=res.parts;
+    document.getElementById('l-load').style.display='none';
+    document.getElementById('l-main').style.display='block';
+    renderStats(); renderList();
+  }).catch(function(e){
+    document.getElementById('l-load').innerHTML='<div style="color:#D93B30;font-weight:700">โหลดไม่สำเร็จ</div><div style="font-size:13px;margin-top:6px">'+esc(e.message)+'</div>';
+  });
+}
+
+function loadPart(id){
+  return api('getPart',{id:id}).then(function(res){
+    if(!res.success){ showPartErr(res.message||('ไม่พบอะไหล่รหัส '+id)); return; }
+    part=res.part;
+    fillPart();
+    document.getElementById('p-load').style.display='none';
+    document.getElementById('p-err').style.display='none';
+    document.getElementById('p-main').style.display='block';
+    if(curView==='part') document.getElementById('hd-t').textContent=part.name;
+    checkQty();
+  }).catch(function(e){ showPartErr('เชื่อมต่อไม่สำเร็จ: '+e.message); });
+}
+
+function loadTechs(){
+  if(techsLoaded) return Promise.resolve();
+  return api('getTechnicians').then(function(res){
+    techs = (res && res.success) ? res.technicians : [];
+    techsLoaded=true; fillTechs();
+  }).catch(function(){ techs=[]; techsLoaded=true; fillTechs(); });
+}
+
+function loadHist(silent){
+  if(!silent){ document.getElementById('h-load').style.display='block'; document.getElementById('h-main').style.display='none'; }
+  return api('getHistory',{limit:200}).then(function(res){
+    hist = (res && res.success) ? res.history : [];
+    histLoaded=true;
+    document.getElementById('h-load').style.display='none';
+    document.getElementById('h-main').style.display='block';
+    renderHist();
+  }).catch(function(e){
+    document.getElementById('h-load').innerHTML='<div style="color:#D93B30;font-weight:700">โหลดประวัติไม่สำเร็จ</div>';
+  });
+}
+
+function showPartErr(msg){
+  document.getElementById('p-load').style.display='none';
+  document.getElementById('p-main').style.display='none';
+  document.getElementById('p-err').style.display='block';
+  document.getElementById('p-err-d').textContent=msg;
+}
+
+/* ════ PART DETAIL ════ */
+function openPart(id){
+  PID=id;
+  history.replaceState(null,'','?id='+encodeURIComponent(id));
+  part=null;
+  document.getElementById('p-load').style.display='block';
+  document.getElementById('p-main').style.display='none';
+  document.getElementById('p-err').style.display='none';
+  document.getElementById('ok').classList.remove('on');
+  document.getElementById('p-action').style.display='block';
+  document.getElementById('pcard').style.display='block';
+  setMode('out');
+  switchView('part');
+  loadPart(id).then(loadTechs);
+}
+
+function fillPart(){
+  const st=statusOf(part);
+  document.getElementById('pcard').className='pcard s-'+st;
+  document.getElementById('p-code').textContent=part.id;
+  document.getElementById('p-name').textContent=part.name;
+  document.getElementById('p-qty').textContent=part.qty;
+  document.getElementById('p-unit').textContent=part.unit;
+  document.getElementById('p-min').textContent=part.min!==null?part.min:'—';
+  document.getElementById('p-max').textContent=part.max!==null?part.max:'—';
+  document.getElementById('p-qty').style.color = st==='out'?'#D93B30':(st==='low'?'#E08A00':'#12303F');
+  const b=document.getElementById('p-bdg'); b.textContent=LBL[st]; b.className='bdg b-'+st;
+  const bw=document.getElementById('p-bar-w');
+  if(part.max){ bw.style.display='block';
+    const pct=Math.min(100,Math.round(part.qty/part.max*100));
+    document.getElementById('p-bar').style.width=pct+'%';
+    document.getElementById('p-bar').style.background=CLR[st];
+  } else bw.style.display='none';
+  const nw=document.getElementById('p-note-w');
+  if(part.note){ nw.style.display='block'; document.getElementById('p-note').textContent=part.note; }
+  else nw.style.display='none';
+}
+
+function fillTechs(){
+  const sel=document.getElementById('who');
+  let h='<option value="">— เลือกชื่อ —</option>';
+  techs.forEach(function(t){
+    const lb=t.code?(t.name+' ('+t.code+')'):t.name;
+    h+='<option value="'+esc(t.name)+'">'+esc(lb)+'</option>';
+  });
+  h+='<option value="__other__">อื่นๆ (พิมพ์ชื่อเอง)</option>';
+  sel.innerHTML=h;
+  if(!techs.length){
+    sel.value='__other__';
+    document.getElementById('who-o-w').style.display='block';
+    document.getElementById('who-hint').innerHTML='<span style="color:#E08A00;font-weight:600">ยังไม่มีรายชื่อในระบบ — พิมพ์ชื่อด้านล่าง</span>';
+  }
+  sel.onchange=function(){
+    document.getElementById('who-o-w').style.display = sel.value==='__other__'?'block':'none';
+  };
+}
+
+/* ════ MODE (เบิก / รับเข้า) ════ */
+function setMode(m){
+  mode=m;
+  ['out','in','adj'].forEach(function(k){
+    const t=document.getElementById('tab-'+k);
+    t.classList.toggle('on', k===m);
+    t.classList.toggle(k, k===m);
+  });
+  document.getElementById('p-action').className = m==='in'?'md-in':(m==='adj'?'md-adj':'');
+  document.getElementById('adj-cmp').classList.toggle('on', m==='adj');
+
+  const L = {
+    out:{q:'จำนวนที่ต้องการเบิก', w:'ชื่อผู้เบิก',     n:'เหตุผล / งานที่ใช้',   np:'เช่น เปลี่ยนตามรอบ PM',   s:'ยืนยันการเบิก'},
+    in :{q:'จำนวนที่รับเข้า',      w:'ผู้รับของเข้า',   n:'หมายเหตุ / แหล่งที่มา', np:'เช่น รับจากผู้ขาย',       s:'ยืนยันการรับเข้า'},
+    adj:{q:'จำนวนที่นับได้จริง',   w:'ผู้ปรับยอด',      n:'หมายเหตุ',              np:'เช่น นับสต็อครอบเดือน',   s:'ยืนยันการปรับยอด'}
+  }[m];
+
+  document.getElementById('l-qty').innerHTML   = L.q+' <span class="req">*</span>';
+  document.getElementById('l-who').innerHTML   = L.w+' <span class="req">*</span>';
+  document.getElementById('l-note').textContent= L.n;
+  document.getElementById('note').placeholder  = L.np;
+  document.getElementById('sub-tx').textContent= L.s;
+  document.getElementById('sub-ico').innerHTML =
+      m==='out' ? '<path d="M20 6L9 17l-5-5"/>'
+    : m==='in'  ? '<path d="M12 5v14M19 12l-7 7-7-7"/>'
+    :             '<path d="M20 6L9 17l-5-5"/>';
+
+  // โหมดปรับยอด → ตั้งค่าเริ่มต้นเป็นยอดปัจจุบัน
+  document.getElementById('qty').value = (m==='adj' && part) ? part.qty : 1;
+  checkQty();
+}
+
+function bump(d){
+  const el=document.getElementById('qty');
+  let v=(parseInt(el.value)||0)+d;
+  const floor = (mode==='adj') ? 0 : 1;     // ปรับยอดให้เป็น 0 ได้
+  if(v<floor) v=floor;
+  if(mode==='out' && part.qty>0 && v>part.qty) v=part.qty;
+  el.value=v; checkQty();
+}
+
+function checkQty(){
+  if(!part) return;
+  const el=document.getElementById('qty');
+  const floor = (mode==='adj') ? 0 : 1;
+  let v=parseInt(el.value); if(isNaN(v)||v<floor) v=floor;
+  const hint=document.getElementById('qty-hint');
+  const btn=document.getElementById('submit');
+  document.getElementById('minus').disabled=(v<=floor);
+
+  if(mode==='adj'){
+    document.getElementById('plus').disabled=false;
+    btn.disabled=false;
+    const diff=v-part.qty;
+    document.getElementById('adj-before').textContent=part.qty;
+    document.getElementById('adj-after').textContent=v;
+    const dEl=document.getElementById('adj-diff');
+    dEl.textContent = diff>0?('+'+diff):(diff<0?String(diff):'0');
+    dEl.className='adj-df '+(diff>0?'up':(diff<0?'dn':'eq'));
+
+    if(diff===0){
+      hint.className='hint';
+      hint.textContent='ยอดตรงกับระบบ — ไม่มีการเปลี่ยนแปลง';
+    } else if(part.min!==null && v<part.min){
+      hint.className='hint warn';
+      hint.textContent='ปรับเป็น '+v+' '+part.unit+' — ต่ำกว่า Min ('+part.min+') ควรแจ้งสั่งซื้อ';
+    } else if(part.max!==null && v>part.max){
+      hint.className='hint warn';
+      hint.textContent='ปรับเป็น '+v+' '+part.unit+' — เกิน Max ('+part.max+')';
+    } else {
+      hint.className='hint';
+      hint.textContent=(diff>0?'เพิ่มขึ้น ':'ลดลง ')+Math.abs(diff)+' '+part.unit+' จากยอดในระบบ';
+    }
+    return;
+  }
+
+  if(mode==='out'){
+    document.getElementById('plus').disabled=(v>=part.qty);
+    if(part.qty<=0){ hint.className='hint err'; hint.textContent='อะไหล่นี้หมดสต็อค ไม่สามารถเบิกได้ — สลับไปแท็บ "รับเข้า" เพื่อเติมสต็อค'; btn.disabled=true; return; }
+    btn.disabled=false;
+    if(v>part.qty){ hint.className='hint err'; hint.textContent='เกินคงเหลือ — เบิกได้สูงสุด '+part.qty+' '+part.unit; return; }
+    const after=part.qty-v;
+    if(part.min!==null && after<part.min){
+      hint.className='hint warn';
+      hint.textContent='หลังเบิกจะเหลือ '+after+' '+part.unit+' — ต่ำกว่า Min ('+part.min+') ควรแจ้งสั่งซื้อ';
+    } else {
+      hint.className='hint';
+      hint.textContent='หลังเบิกจะเหลือ '+after+' '+part.unit+(part.min!==null?' (Min '+part.min+')':'');
+    }
+  } else {
+    document.getElementById('plus').disabled=false;
+    btn.disabled=false;
+    const after=part.qty+v;
+    if(part.max!==null && after>part.max){
+      hint.className='hint warn';
+      hint.textContent='หลังรับเข้าจะมี '+after+' '+part.unit+' — เกิน Max ('+part.max+') อยู่ '+(after-part.max);
+    } else {
+      hint.className='hint';
+      hint.textContent='หลังรับเข้าจะมี '+after+' '+part.unit+(part.max!==null?' (Max '+part.max+')':'');
+    }
   }
 }
 
-function renderPart(p) {
-  document.title = `เบิก: ${p.name}`;
-  document.getElementById('hdrIcon').textContent = getIcon(p.name);
-  document.getElementById('hdrName').textContent = p.name;
-  document.getElementById('hdrId').textContent   = p.id;
+function whoValue(){
+  const s=document.getElementById('who').value;
+  return s==='__other__' ? document.getElementById('who-o').value.trim() : s;
+}
 
-  const stockEl = document.getElementById('stockNum');
-  stockEl.textContent = p.qty;
-  if      (p.qty === 0)              stockEl.className = 'stock-num empty';
-  else if (p.min != null && p.qty <= p.min) stockEl.className = 'stock-num low';
-  else                               stockEl.className = 'stock-num';
+function askConfirm(){
+  const raw=document.getElementById('qty').value;
+  const qty=parseInt(raw);
+  const who=whoValue();
 
-  document.getElementById('stockUnit').textContent = p.unit;
-  document.getElementById('stockMin').textContent  = p.min != null ? p.min : '–';
-  document.getElementById('stockMax').textContent  = p.max != null ? p.max : '–';
-
-  const warnEl = document.getElementById('stockWarn');
-  if (p.qty === 0) {
-    warnEl.textContent = '🚫 หมดสต็อก — ไม่สามารถเบิกได้';
-    warnEl.className = 'stock-warn empty'; warnEl.style.display = 'inline-block';
-  } else if (p.min != null && p.qty <= p.min) {
-    warnEl.textContent = '⚠️ จำนวนต่ำกว่าขั้นต่ำ — กรุณาสั่งซื้อเพิ่ม';
-    warnEl.className = 'stock-warn low'; warnEl.style.display = 'inline-block';
-  } else { warnEl.style.display = 'none'; }
-
-  document.getElementById('infoUnit').textContent = p.unit;
-  if (p.note) {
-    document.getElementById('noteCard').style.display = 'flex';
-    document.getElementById('infoNote').textContent   = p.note;
+  if(mode==='adj'){
+    if(isNaN(qty)||qty<0) return toast('กรุณาระบุจำนวนที่นับได้','err');
+    if(qty===part.qty)    return toast('ยอดตรงกับระบบอยู่แล้ว ไม่ต้องปรับ','err');
+  } else {
+    if(isNaN(qty)||qty<1) return toast('กรุณาระบุจำนวน','err');
+    if(mode==='out' && qty>part.qty) return toast('จำนวนเกินคงเหลือ ('+part.qty+' '+part.unit+')','err');
   }
+  if(!who) return toast('กรุณาเลือกหรือระบุชื่อ','err');
 
-  const disabled = p.qty === 0;
-  document.getElementById('withdrawQty').max      = p.qty;
-  document.getElementById('withdrawQty').disabled = disabled;
-  document.getElementById('requester').disabled   = disabled;
-  document.getElementById('reason').disabled      = disabled;
-  const btn = document.getElementById('btnSubmit');
-  btn.disabled    = disabled;
-  btn.textContent = disabled ? 'หมดสต็อก — ไม่สามารถเบิกได้' : 'ยืนยันการเบิก';
+  const M={
+    out:{t:'✅ ยืนยันการเบิก',    cls:'',    wk:'ผู้เบิก',    q:'−'+qty+' '+part.unit,                 af:(part.qty-qty)},
+    in :{t:'✅ ยืนยันการรับเข้า',  cls:' in', wk:'ผู้รับเข้า', q:'+'+qty+' '+part.unit,                 af:(part.qty+qty)},
+    adj:{t:'⚠️ ยืนยันการปรับยอด', cls:' adj',wk:'ผู้ปรับยอด', q:part.qty+' → '+qty+' '+part.unit,      af:qty}
+  }[mode];
 
-  document.getElementById('loadingState').style.display = 'none';
-  document.getElementById('mainPage').style.display     = 'block';
+  document.getElementById('c-title').textContent = M.t;
+  document.getElementById('c-title').className   = 'mdl-t'+M.cls;
+  document.getElementById('c-box').className     = 'mdl-box'+M.cls;
+  document.getElementById('c-ok').className      = 'mdl-b pri'+M.cls;
+  document.getElementById('c-qk').textContent    = mode==='adj'?'เปลี่ยนจาก':'จำนวน';
+  document.getElementById('c-wk').textContent    = M.wk;
+  document.getElementById('c-name').textContent  = part.name;
+  document.getElementById('c-qty').textContent   = M.q;
+  document.getElementById('c-after').textContent = M.af+' '+part.unit;
+  document.getElementById('c-who').textContent   = who;
+  document.getElementById('ov').classList.add('on');
+}
+function closeConfirm(){ document.getElementById('ov').classList.remove('on'); }
+
+function doSubmit(){
+  const qty=parseInt(document.getElementById('qty').value);
+  const who=whoValue();
+  const note=document.getElementById('note').value.trim();
+  const btn=document.getElementById('c-ok');
+  const before=part.qty;
+  btn.disabled=true; btn.textContent='กำลังบันทึก...';
+
+  // ⚠️ action "withdraw" ใช้พารามิเตอร์เดิมทุกตัว — QR เดิมทำงานปกติ
+  let act, p;
+  if(mode==='in'){       act='receive';  p={id:PID,qty:qty,receiver:who,note:note}; }
+  else if(mode==='adj'){ act='adjust';   p={id:PID,qty:qty,person:who,note:note}; }
+  else {                 act='withdraw'; p={id:PID,qty:qty,requester:who,reason:note}; }
+
+  api(act,p).then(function(res){
+    btn.disabled=false; btn.textContent='ยืนยัน';
+    closeConfirm();
+    if(!res.success) return toast(res.message||'บันทึกไม่สำเร็จ','err');
+
+    const diff = (mode==='adj') ? (qty-before) : 0;
+    const T={
+      out:{t:'เบิกสำเร็จ!',    qk:'จำนวนที่เบิก',  wk:'ผู้เบิก',     qv:'−'+qty+' '+part.unit},
+      in :{t:'รับเข้าสำเร็จ!',  qk:'จำนวนรับเข้า',  wk:'ผู้รับเข้า',  qv:'+'+qty+' '+part.unit},
+      adj:{t:'ปรับยอดสำเร็จ!', qk:'เปลี่ยนจาก',    wk:'ผู้ปรับยอด',
+           qv:before+' → '+qty+' ('+(diff>0?'+':'')+diff+')'}
+    }[mode];
+
+    document.getElementById('p-action').style.display='none';
+    document.getElementById('pcard').style.display='none';
+    document.getElementById('ok').classList.add('on');
+    document.getElementById('ok-t').textContent   = T.t;
+    document.getElementById('ok-qk').textContent  = T.qk;
+    document.getElementById('ok-wk').textContent  = T.wk;
+    document.getElementById('ok-name').textContent= part.name;
+    document.getElementById('ok-qty').textContent = T.qv;
+    document.getElementById('ok-rem').textContent = res.remaining+' '+res.unit;
+    document.getElementById('ok-who').textContent = who;
+    document.getElementById('ok-d').textContent   = 'บันทึกข้อมูลเข้าระบบเรียบร้อยแล้ว';
+
+    const w=document.getElementById('ok-warn'); w.classList.remove('on');
+    if(res.lowStock){
+      w.classList.add('on');
+      w.innerHTML='<b>⚠️ แจ้งเตือนสต็อคต่ำ</b><br>คงเหลือ '+res.remaining+' '+res.unit+
+                  ' ต่ำกว่าค่าขั้นต่ำ ('+res.min+') — กรุณาแจ้งสั่งซื้อเพิ่ม';
+    } else if(res.overMax){
+      w.classList.add('on');
+      w.innerHTML='<b>ℹ️ หมายเหตุ</b><br>คงเหลือ '+res.remaining+' '+res.unit+' เกินค่า Max ('+res.max+') แล้ว';
+    }
+    window.scrollTo({top:0,behavior:'smooth'});
+
+    part.qty=res.remaining;
+    loadParts();
+    histLoaded=false;
+  }).catch(function(e){
+    btn.disabled=false; btn.textContent='ยืนยัน';
+    closeConfirm(); toast('เชื่อมต่อไม่สำเร็จ: '+e.message,'err');
+  });
 }
 
-function adjustQty(delta) {
-  const input = document.getElementById('withdrawQty');
-  let v = parseInt(input.value) || 1;
-  input.value = Math.max(1, Math.min(partData.qty, v + delta));
+function resetForm(){
+  document.getElementById('ok').classList.remove('on');
+  document.getElementById('p-action').style.display='block';
+  document.getElementById('pcard').style.display='block';
+  document.getElementById('note').value='';
+  document.getElementById('qty').value=1;
+  loadPart(PID);
+  window.scrollTo({top:0,behavior:'smooth'});
 }
 
-function confirmWithdraw() {
-  const qty       = parseInt(document.getElementById('withdrawQty').value);
-  const requester = document.getElementById('requester').value.trim();
-  const reason    = document.getElementById('reason').value.trim();
-  if (!qty || qty < 1)   { showToast('กรุณาระบุจำนวน', true); return; }
-  if (!requester)         { showToast('กรุณาระบุชื่อผู้เบิก', true); return; }
-  if (qty > partData.qty) { showToast(`จำนวนเกิน: มีเพียง ${partData.qty} ${partData.unit}`, true); return; }
+/* ════ LIST ════ */
+function renderStats(){
+  const s={total:parts.length,ok:0,low:0,out:0,over:0,unset:0};
+  parts.forEach(function(p){ s[statusOf(p)]++; });
+  document.getElementById('stats').innerHTML=
+    stCard('b-a','c-a','ทั้งหมด',s.total,'')+
+    stCard('b-o','c-o','ปกติ',s.ok,'ok')+
+    stCard('b-w','c-w','ใกล้หมด',s.low,'low')+
+    stCard('b-x','c-x','หมดแล้ว',s.out,'out');
 
-  const after   = partData.qty - qty;
-  const warnMsg = partData.min != null && after <= partData.min
-    ? `<br><span style="color:var(--warning);font-size:12px;">⚠️ หลังเบิกจะต่ำกว่าขั้นต่ำ (${partData.min})</span>` : '';
+  const al=document.getElementById('alert');
+  if(s.out>0){
+    al.className='alert on crit';
+    document.getElementById('alert-t').textContent='มีอะไหล่หมดสต็อค '+s.out+' รายการ';
+    document.getElementById('alert-d').textContent= s.low>0?('และใกล้หมดอีก '+s.low+' รายการ — ควรเร่งสั่งซื้อ'):'ควรเร่งสั่งซื้อโดยด่วน';
+  } else if(s.low>0){
+    al.className='alert on';
+    document.getElementById('alert-t').textContent='มีอะไหล่ใกล้หมด '+s.low+' รายการ';
+    document.getElementById('alert-d').textContent='คงเหลือต่ำกว่าค่า Min ที่กำหนด — เตรียมสั่งซื้อ';
+  } else al.className='alert';
 
-  document.getElementById('modalBody').innerHTML =
-    `<strong>${partData.name}</strong><br>
-     จำนวน: <span class="modal-highlight">${qty} ${partData.unit}</span><br>
-     ผู้เบิก: <span class="modal-highlight">${requester}</span><br>
-     ${reason ? `งาน: ${reason}<br>` : ''}
-     <br>คงเหลือหลังเบิก: <strong>${after} ${partData.unit}</strong>${warnMsg}`;
-  document.getElementById('modal').classList.add('show');
+  const dot=document.getElementById('nv-dot');
+  const n=s.out+s.low;
+  if(n>0){ dot.textContent=n>99?'99+':n; dot.classList.add('on'); } else dot.classList.remove('on');
 }
+function stCard(bc,cc,lb,v,st){
+  return '<div class="st '+bc+'" onclick="filterBy(\''+st+'\')"><div class="st-l">'+lb+
+         '</div><div class="st-v '+cc+'">'+v+'</div></div>';
+}
+function filterBy(st){ document.getElementById('fs').value=st||''; renderList(); }
 
-function closeModal() { document.getElementById('modal').classList.remove('show'); }
-
-async function doWithdraw() {
-  closeModal();
-  const qty       = parseInt(document.getElementById('withdrawQty').value);
-  const requester = document.getElementById('requester').value.trim();
-  const reason    = document.getElementById('reason').value.trim();
-  const btn = document.getElementById('btnSubmit');
-  btn.disabled = true; btn.textContent = 'กำลังบันทึก...';
-  try {
-    const url = `${SCRIPT_URL}?action=withdraw`
-      + `&id=${encodeURIComponent(partData.id)}&qty=${qty}`
-      + `&requester=${encodeURIComponent(requester)}&reason=${encodeURIComponent(reason)}`;
-    const res  = await fetch(url);
-    const data = await res.json();
-    if (data.success) {
-      document.getElementById('mainPage').style.display = 'none';
-      document.getElementById('successSub').innerHTML =
-        `เบิก <strong>${partData.name}</strong><br>จำนวน ${qty} ${partData.unit}<br>โดย: ${requester}`;
-      document.getElementById('successRemaining').textContent =
-        `คงเหลือในสต็อก: ${data.remaining} ${data.unit}`;
-      document.getElementById('successWrap').classList.add('show');
-    } else { throw new Error(data.message); }
-  } catch (err) {
-    showToast(err.message || 'เกิดข้อผิดพลาด กรุณาลองใหม่', true);
-    btn.disabled = false; btn.textContent = 'ยืนยันการเบิก';
+function renderList(){
+  const q=(document.getElementById('q').value||'').toLowerCase().trim();
+  const fs=document.getElementById('fs').value;
+  const list=parts.filter(function(p){
+    const mq=!q||p.name.toLowerCase().indexOf(q)>=0||p.id.toLowerCase().indexOf(q)>=0;
+    return mq && (!fs||statusOf(p)===fs);
+  });
+  document.getElementById('cnt').textContent='แสดง '+list.length+' จาก '+parts.length+' รายการ';
+  const el=document.getElementById('list');
+  if(!list.length){
+    el.innerHTML='<div class="empty"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.3-4.3"/></svg><div>ไม่พบรายการที่ค้นหา</div></div>';
+    return;
   }
+  el.innerHTML=list.map(function(p){
+    const st=statusOf(p);
+    const qc= st==='out'?'#D93B30':(st==='low'?'#E08A00':'#12303F');
+    return '<div class="li s-'+st+'" onclick="openPart(\''+p.id+'\')">'+
+      '<div class="li-q"><div class="li-qv" style="color:'+qc+'">'+p.qty+'</div><div class="li-qu">'+esc(p.unit)+'</div></div>'+
+      '<div class="li-m"><div class="li-n">'+esc(p.name)+'</div><div class="li-c">'+p.id+
+        (p.min!==null?'  ·  Min '+p.min:'')+'</div></div>'+
+      '<div class="li-r"><span class="bdg b-'+st+'">'+LBL[st]+'</span><div class="li-ar"></div></div>'+
+    '</div>';
+  }).join('');
 }
 
-function showToast(msg, isError = false) {
-  const t = document.getElementById('toast');
-  t.textContent = msg;
-  t.className = 'toast' + (isError ? ' error' : '');
-  t.classList.add('show');
-  setTimeout(() => t.classList.remove('show'), 2800);
+/* ════ HISTORY ════ */
+function renderHist(){
+  const q=(document.getElementById('hq').value||'').toLowerCase().trim();
+  const f=document.getElementById('hf').value;
+  const list=hist.filter(function(h){
+    const mq=!q||h.name.toLowerCase().indexOf(q)>=0||h.id.toLowerCase().indexOf(q)>=0||
+             (h.person||'').toLowerCase().indexOf(q)>=0;
+    return mq && (!f||h.type===f);
+  });
+  document.getElementById('h-cnt').textContent='แสดง '+list.length+' รายการล่าสุด';
+  const el=document.getElementById('h-list');
+  if(!list.length){
+    el.innerHTML='<div class="empty"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 8v4l3 3"/></svg><div>ไม่พบประวัติ</div></div>';
+    return;
+  }
+  el.innerHTML=list.map(function(h){
+    let qv, tag;
+    if(h.type==='adj'){
+      qv = (h.qty>0?'+':'')+h.qty;
+      tag = '<span class="hr-tag adj">ปรับยอด</span>';
+    } else if(h.type==='in'){
+      qv = '+'+h.qty; tag='<span class="hr-tag in">รับเข้า</span>';
+    } else {
+      qv = '−'+h.qty; tag='<span class="hr-tag out">เบิกออก</span>';
+    }
+    const sub = h.type==='adj'
+      ? (h.id+'  ·  '+h.before+' → '+h.remaining)
+      : (h.id+'  ·  เหลือ '+h.remaining);
+    return '<div class="hr t-'+h.type+'" onclick="openPart(\''+h.id+'\')">'+
+      '<div class="hr-q"><div class="hr-qv '+h.type+'">'+qv+'</div><div class="hr-qu">'+esc(h.unit)+'</div></div>'+
+      '<div class="hr-m"><div class="hr-n">'+esc(h.name)+' '+tag+'</div>'+
+      '<div class="hr-c">'+sub+'</div>'+
+      '<div class="hr-p"><b>'+esc(h.person)+'</b>'+(h.note&&h.note!=='-'?' — '+esc(h.note):'')+'</div>'+
+      '<div class="hr-t">'+esc(h.time)+'</div></div>'+
+    '</div>';
+  }).join('');
 }
 
-loadPart();
+/* ════ UTIL ════ */
+function toast(msg,type){
+  const el=document.getElementById('toast');
+  el.textContent=msg; el.className='toast on '+(type||'');
+  clearTimeout(el._t); el._t=setTimeout(function(){ el.className='toast '+(type||''); },3000);
+}
+document.getElementById('ov').addEventListener('click',function(e){ if(e.target===this) closeConfirm(); });
+
+/* ════ INIT ════ */
+(function init(){
+  loadParts();
+  if(PID){
+    switchView('part');
+    loadPart(PID).then(loadTechs);
+  } else {
+    document.getElementById('p-load').style.display='none';
+    switchView('list');
+    loadTechs();
+  }
+})();
 </script>
 </body>
 </html>
